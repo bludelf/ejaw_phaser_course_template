@@ -84,6 +84,11 @@ export default class Boot extends Phaser.Scene {
                 this.load[type](`${key}-${frame}`, `${path}.json`, folder);
             }
         });
+
+        this.load.spritesheet("tiles", "assets/spritesheet/tiles.png", {
+            "frameWidth": 200,
+            "frameHeight": 200
+        });
     }
 
     public create() {
@@ -92,7 +97,7 @@ export default class Boot extends Phaser.Scene {
         this.initAsepriteAnimations();
 
         this.time.delayedCall(50, () => {
-            this.scene.start("Example");
+            this.scene.start("Example2");
         });
     }
 
