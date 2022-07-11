@@ -1,67 +1,62 @@
-import { WIDTH, CENTER_X } from "scripts/util/globals";
+import { Data, GameObjects } from "phaser";
+import { WIDTH, CENTER_X, CENTER_Y } from "scripts/util/globals";
 import { Popup } from "./Example2/CustomPopup";
-
+import { List } from "scripts/util/extra";
 
 export default class Example2 extends Phaser.Scene {
+    static grid_x_size = 8;
+    static grid_y_size = 8;
+
+    public grid: Phaser.Geom.Point[][] = [];
+
     constructor() {
         super({ key: "Example2" });
     }
 
-    public create(){
-        //++++++++++++++++++++++++++++++++++++++++++++++++
-        // const line_x = new Phaser.Geom.Line(200, 0, 900, 0);
-        // const line_y = new Phaser.Geom.Line(200, 0, 0, 900);
-
-        // const line_x_p = line_x.getPoints(5);
-        // const line_y_p = line_y.getPoints(5);
-
-        // // new Array(12).fill("").forEach((element, index) => {
-        // //     this.add.image(CENTER_X, 100+(index*100), "tiles", index);
-        // // });
-        // var count_img = 0;
-        // for (let i=0; i < 4; i++){
-        //     for (let j=0; j<4; j++){
-        //         this.add.image(line_x_p[i].x, line_y_p[j].y, "tiles", count_img);
-        //         count_img++;
-        //     }
-        // }
-
-        // var coords = new Array(12).fill({x:0, y:0, width: 100, height: 100, originX: 0.5, originY: 0.5});
-        // Phaser.Actions.GridAlign(coords, {
-        //     cellWidth: 100,
-        //     cellHeight: 100,
-        //     x: 0,
-        //     y: 0
-        // });
-
-        // coords.forEach((data, index) => {
-        //     console.log(data)
-        //     this.add.image(data.x, data.y, "tiles", index);
-        // })
-        //+++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
-
-        //Success
-        // var count = 0;
-        // for (let i=0; i < 3; i++){
-        //     for (let j=0; j<4; j++){
-        //         this.add.image(100+(200*j), 300+(200*i), "tiles", count);
-        //         count++;
-        //         console.log(count);
-        //     }
-        // }
-        //Success
-        // for (let i=0; i < 4; i++){
-        //     for (let j=0; j<4; j++){
-        //         this.add.image(100+(200*j), 300+(200*i), "ui-emptytile");
-        //     }
-        // }
-
-        
-
+    public init() {
+        this.init_grid();
     }
 
+    public init_grid() {
+        const grid_x_size = Example2.grid_x_size;
+        const grid_y_size = Example2.grid_y_size;
 
+        const coords = new List(grid_x_size * grid_y_size, () => ({
+            x: 0,
+            y: 0,
+            width: 100,
+            height: 100,
+            originX: 1,
+            originY: 1,
+        }));
 
+        Phaser.Actions.GridAlign(coords as any, {
+            cellWidth: 100,
+            cellHeight: 100,
+            x: CENTER_X - (grid_x_size * 100) / 2,
+            y: CENTER_Y - (grid_y_size * 100) / 2,
+            width: grid_x_size,
+            height: grid_y_size,
+            position: Phaser.Display.Align.LEFT_TOP,
+        });
 
+        coords.forEach((data, index) => {
+            const grid_y = Math.floor(index / grid_x_size);
+            if (this.grid[grid_y] === undefined) {
+                this.grid[grid_y] = [];
+            }
+            this.grid[grid_y].push(new Phaser.Geom.Point(data.x, data.y));
+        });
+    }
+
+    public create() {
+        this.create_blank_grid();
+    }
+
+    public create_blank_grid() {
+        this.grid.flat().forEach((element) => {
+            const image = this.add.image(element.x, element.y, "ui-emptytile");
+            image.setScale(0.5);
+        });
+    }
 }

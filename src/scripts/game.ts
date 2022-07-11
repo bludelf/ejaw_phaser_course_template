@@ -6,6 +6,8 @@ import { resize } from "./util/extra";
 import { FPS, HEIGHT, WIDTH } from "./util/globals";
 import * as rexcharactercacheplugin from "./util/rexcharactercacheplugin.min.js";
 
+
+
 const config = {
     type: Phaser.WEBGL,
     transparent: true,

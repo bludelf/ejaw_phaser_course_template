@@ -86,8 +86,8 @@ export default class Boot extends Phaser.Scene {
         });
 
         this.load.spritesheet("tiles", "assets/spritesheet/tiles.png", {
-            "frameWidth": 200,
-            "frameHeight": 200
+            frameWidth: 200,
+            frameHeight: 200
         });
     }
 
