@@ -2,12 +2,15 @@ import { Data, GameObjects } from "phaser";
 import { WIDTH, CENTER_X, CENTER_Y } from "scripts/util/globals";
 import { Popup } from "./Example2/CustomPopup";
 import { List } from "scripts/util/extra";
+import TileManager  from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
     static grid_y_size = 8;
 
-    public grid: Phaser.Geom.Point[][] = [];
+    public grid: Phaser.Math.Vector3[][] = [];
+    
+    private tilemanager: TileManager;
 
     constructor() {
         super({ key: "Example2" });
@@ -45,18 +48,26 @@ export default class Example2 extends Phaser.Scene {
             if (this.grid[grid_y] === undefined) {
                 this.grid[grid_y] = [];
             }
-            this.grid[grid_y].push(new Phaser.Geom.Point(data.x, data.y));
+            this.grid[grid_y].push(new Phaser.Math.Vector3(data.x, data.y, index));
         });
     }
 
     public create() {
         this.create_blank_grid();
+        this.createTileManager();
+        this.tilemanager.createTile();
+        this.tilemanager.createTile();
+    }
+
+    public createTileManager(){
+        this.tilemanager = new TileManager(this, Example2.grid_x_size, Example2.grid_y_size, this.grid);
     }
 
     public create_blank_grid() {
         this.grid.flat().forEach((element) => {
             const image = this.add.image(element.x, element.y, "ui-emptytile");
             image.setScale(0.5);
+            image.setDepth(0);
         });
     }
 }
