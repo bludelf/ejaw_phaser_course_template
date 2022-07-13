@@ -36,8 +36,14 @@ export default class TileManager extends Phaser.GameObjects.Group {
         
         const tileid = this.rnd.pick(positionsFreePhaser.getArray());
         const newTile = this.getFirstDead() as Tile;
-        newTile.setGridPosition(tileid, this.grid, this.cols, this.rows);
-        newTile.activate();
+        try{
+            newTile.setGridPosition(tileid, this.grid, this.cols, this.rows);
+            newTile.activate();
+        }
+        catch{
+            console.log("No more space to create a tile");
+        }
+        
     }
 
     private destroyTile(x: number, y: number) {

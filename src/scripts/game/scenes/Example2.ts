@@ -2,14 +2,14 @@ import { Data, GameObjects } from "phaser";
 import { WIDTH, CENTER_X, CENTER_Y } from "scripts/util/globals";
 import { Popup } from "./Example2/CustomPopup";
 import { List } from "scripts/util/extra";
-import TileManager  from "./Example2/TileManager";
+import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
     static grid_y_size = 8;
 
     public grid: Phaser.Math.Vector3[][] = [];
-    
+
     private tilemanager: TileManager;
 
     constructor() {
@@ -48,7 +48,9 @@ export default class Example2 extends Phaser.Scene {
             if (this.grid[grid_y] === undefined) {
                 this.grid[grid_y] = [];
             }
-            this.grid[grid_y].push(new Phaser.Math.Vector3(data.x, data.y, index));
+            this.grid[grid_y].push(
+                new Phaser.Math.Vector3(data.x, data.y, index)
+            );
         });
     }
 
@@ -57,10 +59,38 @@ export default class Example2 extends Phaser.Scene {
         this.createTileManager();
         this.tilemanager.createTile();
         this.tilemanager.createTile();
+
+        this.input.keyboard.on("keydown", this.keyListener, this);
     }
 
-    public createTileManager(){
-        this.tilemanager = new TileManager(this, Example2.grid_x_size, Example2.grid_y_size, this.grid);
+    public keyListener(inputedKey) {
+        switch (inputedKey.key) {
+            case "ArrowRight":
+                console.log("You have pressed right arrow");
+                this.tilemanager.createTile();
+                break;
+            case "ArrowLeft":
+                console.log("You have pressed left arrow");
+                this.tilemanager.createTile();
+                break;
+            case "ArrowDown":
+                console.log("You have pressed down arrow");
+                this.tilemanager.createTile();
+                break;
+            case "ArrowUp":
+                console.log("You have pressed top arrow");
+                this.tilemanager.createTile();
+                break;
+        }
+    }
+
+    public createTileManager() {
+        this.tilemanager = new TileManager(
+            this,
+            Example2.grid_x_size,
+            Example2.grid_y_size,
+            this.grid
+        );
     }
 
     public create_blank_grid() {
