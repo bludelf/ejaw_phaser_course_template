@@ -48,6 +48,29 @@ export default class TileManager extends Phaser.GameObjects.Group {
         return true;
     }
 
+    private moveUntil(element){
+        
+
+    }
+
+    public moveTiles(dir_x: number, dir_y: number) {
+        const childs = this.getMatching("active", true);
+        for (let i = 0; i < childs.length; i++) {
+            const child = childs[i];
+            const { x, y } = child.getGridPosition();
+            console.log(child);
+            if (x + dir_x >= this.rows) continue;
+            if (y + dir_y >= this.cols) continue;
+            if (x + dir_x < 0) continue;
+            if (y + dir_y < 0) continue;
+
+            const posGrid = this.grid[x + dir_x][y + dir_y].z;
+            if (this.getMatching("grid_position",posGrid).length) continue;
+            console.log(posGrid, x, y, x+dir_x, y+dir_y);
+            childs[i].setGridPosition(posGrid, this.grid, this.cols, this.rows);
+        }
+    }
+
     private destroyTile(x: number, y: number) {
         const tile = this.get(x, y);
         tile?.clear();

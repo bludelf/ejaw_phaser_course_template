@@ -1,5 +1,7 @@
 export default class Tile extends Phaser.GameObjects.Image {
     public grid_position = -1;
+    public grid_x: number;
+    public grid_y: number;
 
     constructor(scene: Phaser.Scene) {
         super(scene, 0, 0, "tiles", 0);
@@ -18,6 +20,12 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.grid_position = position;
         this.x = grid[Math.floor(position / cols)][position % rows].x;
         this.y = grid[Math.floor(position / cols)][position % rows].y;
+        this.grid_x = Math.floor(position / cols);
+        this.grid_y = position % rows;
+    }
+
+    public getGridPosition() {
+        return { x: this.grid_x, y: this.grid_y };
     }
 
     public clearGridPosition() {
