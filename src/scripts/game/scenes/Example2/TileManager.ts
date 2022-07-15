@@ -48,8 +48,15 @@ export default class TileManager extends Phaser.GameObjects.Group {
         return true;
     }
 
-    private moveUntil(element){
-        
+    private moveUntil(element, x, y, x1=0, y1=0) {
+        if (x >= this.rows) return false;
+        if (y >= this.cols) return false;
+        if (x < 0) return false;
+        if (y < 0) return false;
+        const posGrid = this.grid[x][y].z;
+        if (this.getMatching("grid_position", posGrid).length) return false;
+        element.setGridPosition(posGrid, this.grid, this.cols, this.rows);
+        return this.moveUntil(element, x+x1, y+y1, x1, y1);
 
     }
 
@@ -58,16 +65,29 @@ export default class TileManager extends Phaser.GameObjects.Group {
         for (let i = 0; i < childs.length; i++) {
             const child = childs[i];
             const { x, y } = child.getGridPosition();
-            console.log(child);
-            if (x + dir_x >= this.rows) continue;
-            if (y + dir_y >= this.cols) continue;
-            if (x + dir_x < 0) continue;
-            if (y + dir_y < 0) continue;
+            // if (x + dir_x >= this.rows) continue;
+            // if (y + dir_y >= this.cols) continue;
+            // if (x + dir_x < 0) continue;
+            // if (y + dir_y < 0) continue;
 
-            const posGrid = this.grid[x + dir_x][y + dir_y].z;
-            if (this.getMatching("grid_position",posGrid).length) continue;
-            console.log(posGrid, x, y, x+dir_x, y+dir_y);
-            childs[i].setGridPosition(posGrid, this.grid, this.cols, this.rows);
+            // const posGrid = this.grid[x + dir_x][y + dir_y].z;
+            // if (this.getMatching("grid_position", posGrid).length) continue;
+            this.moveUntil(childs[i], x+dir_x, y+dir_y, dir_x, dir_y);
+            //childs[i].setGridPosition(posGrid, this.grid, this.cols, this.rows);
+        }
+        for (let i = childs.length-1; i >= 0; i--) {
+            const child = childs[i];
+            const { x, y } = child.getGridPosition();
+            // if (x + dir_x >= this.rows) continue;
+            // if (y + dir_y >= this.cols) continue;
+            // if (x + dir_x < 0) continue;
+            // if (y + dir_y < 0) continue;
+
+            // const posGrid = this.grid[x + dir_x][y + dir_y].z;
+            // if (this.getMatching("grid_position", posGrid).length) continue;
+            this.moveUntil(childs[i], x+dir_x, y+dir_y, dir_x, dir_y);
+            //childs[i].setGridPosition(posGrid, this.grid, this.cols, this.rows);
+            
         }
     }
 
