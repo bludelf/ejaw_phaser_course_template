@@ -61,11 +61,12 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager.createTile();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
-
+        
         this.events;
     }
 
     public keyListener(inputedKey) {
+        this.input.keyboard.enabled = false;
         switch (inputedKey.key) {
             case "ArrowRight":
                 console.log("You have pressed right arrow");
