@@ -5,6 +5,22 @@ export default class Tile extends Phaser.GameObjects.Image {
     public grid_x: number;
     public grid_y: number;
 
+    static readonly frames = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+    ];
+
     constructor(scene: Phaser.Scene) {
         super(scene, 0, 0, "tiles", 0);
         this.setScale(0.5);
@@ -26,7 +42,7 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.grid_y = position % rows;
     }
 
-    public setsGridPosition(
+    public updateGridPosition(
         position: number,
         grid: Phaser.Math.Vector3[][],
         cols: number,
@@ -48,24 +64,35 @@ export default class Tile extends Phaser.GameObjects.Image {
     public updatePosition(
         grid: Phaser.Math.Vector3[][],
         cols: number,
-        rows: number
+        rows: number,
+        countMoves: number
     ) {
-        const position = this.grid_position;
-        const x = grid[Math.floor(position / cols)][position % rows].x;
-        const y = grid[Math.floor(position / cols)][position % rows].y;
-
-        const myscene = this.scene;
-        var tween = myscene.tweens.add({
-            targets: this,
-            x: x,
-            y: y,
-            ease: "Linear",
-            duration: 500,
-            onComplete: function () {
-                tween.remove();
-                myscene.input.keyboard.enabled = true;
-            },
+        return new Promise((resolve)=>{
+            const position = this.grid_position;
+            const x = grid[Math.floor(position / cols)][position % rows].x;
+            const y = grid[Math.floor(position / cols)][position % rows].y;
+    
+            const tween = this.scene.tweens.add({
+                targets: this,
+                x: x,
+                y: y,
+                ease: "Linear",
+                duration: countMoves * 50,
+                onComplete: () => {
+                    tween.remove();
+                    resolve(undefined);
+                },
+            });
         });
+        
+    }
+
+    public getFrameIndex() {
+        return Tile.frames.indexOf(String(this.frame.name));
+    }
+
+    public setFrameIndex(index:number){
+        this.setFrame(Tile.frames[index])
     }
 
     public clear() {

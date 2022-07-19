@@ -61,33 +61,44 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager.createTile();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
-        
+
         this.events;
     }
 
     public keyListener(inputedKey) {
         this.input.keyboard.enabled = false;
+        const dir = { x: 0, y: 0 };
         switch (inputedKey.key) {
             case "ArrowRight":
                 console.log("You have pressed right arrow");
-                this.tilemanager.moveTiles(0,1);
+                dir.x = 1;
+                dir.y = 0;
                 break;
 
             case "ArrowLeft":
                 console.log("You have pressed left arrow");
-                this.tilemanager.moveTiles(0,-1);
+                dir.x = -1;
+                dir.y = 0;
                 break;
 
             case "ArrowDown":
                 console.log("You have pressed down arrow");
-                this.tilemanager.moveTiles(1,0);
+                dir.x = 0;
+                dir.y = 1;
                 break;
 
             case "ArrowUp":
                 console.log("You have pressed top arrow");
-                this.tilemanager.moveTiles(-1,0);
+                dir.x = 0;
+                dir.y = -1;
                 break;
         }
+
+        this.tilemanager.moveTiles(dir.y, dir.x).then(() => {
+            this.input.keyboard.enabled = true;
+            this.tilemanager.createTile();
+            this.tilemanager.createTile();
+        });
     }
 
     public createTileManager() {

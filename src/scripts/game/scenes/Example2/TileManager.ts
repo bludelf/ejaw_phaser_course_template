@@ -49,16 +49,18 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public moveTiles(dir_x: number, dir_y: number) {
+        const promises = new Array();
         const childs = this.getMatching("active", true);
         for (let i = 0; i < childs.length; i++) {
             const child = childs[i];
             let { x, y } = child.getGridPosition();
             x = x + dir_x;
             y = y + dir_y;
+            let countMoves = 0;
 
-            while (this.canMove(x, y)) {
+            while (this.canMove(x, y, child.getFrameIndex())) {
                 const posGrid = this.grid[x][y].z;
-                child.setsGridPosition(
+                child.updateGridPosition(
                     posGrid,
                     this.grid,
                     this.cols,
@@ -66,18 +68,49 @@ export default class TileManager extends Phaser.GameObjects.Group {
                 );
                 x = x + dir_x;
                 y = y + dir_y;
+                countMoves++;
             }
-            child.updatePosition(this.grid, this.cols, this.rows);
+
+            promises.push(
+                child.updatePosition(
+                    this.grid,
+                    this.cols,
+                    this.rows,
+                    countMoves
+                )
+            );
+
+            const possibleTiles = this.getMatching(
+                "grid_position",
+                child.grid_position
+            );
+
+            if (possibleTiles.length > 1) {
+                possibleTiles[0].setFrameIndex(
+                    possibleTiles[0].getFrameIndex() + 1
+                );
+
+                possibleTiles[1].clear();
+            }
         }
+
+        return Promise.all(promises);
     }
 
-    private canMove(x, y) {
+    private canMove(x, y, frame) {
         if (x >= this.rows) return false;
         if (y >= this.cols) return false;
         if (x < 0) return false;
         if (y < 0) return false;
         const posGrid = this.grid[x][y].z;
-        if (this.getMatching("grid_position", posGrid).length) return false;
+        const possibleTiles = this.getMatching("grid_position", posGrid);
+        if (possibleTiles.length) {
+            if (frame === possibleTiles[0].getFrameIndex()) {
+                return true;
+            }
+
+            return false;
+        }
 
         return true;
     }
