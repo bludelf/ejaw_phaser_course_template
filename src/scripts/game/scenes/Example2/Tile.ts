@@ -59,6 +59,7 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     public clearGridPosition() {
         this.grid_position = -1;
+        this.setFrameIndex(0);
     }
 
     public updatePosition(
@@ -67,11 +68,12 @@ export default class Tile extends Phaser.GameObjects.Image {
         rows: number,
         countMoves: number
     ) {
-        return new Promise((resolve)=>{
+        return new Promise((resolve) => {
+            if (this.grid_position === -1) resolve(undefined);
             const position = this.grid_position;
             const x = grid[Math.floor(position / cols)][position % rows].x;
             const y = grid[Math.floor(position / cols)][position % rows].y;
-    
+
             const tween = this.scene.tweens.add({
                 targets: this,
                 x: x,
@@ -84,15 +86,16 @@ export default class Tile extends Phaser.GameObjects.Image {
                 },
             });
         });
-        
     }
 
     public getFrameIndex() {
         return Tile.frames.indexOf(String(this.frame.name));
     }
 
-    public setFrameIndex(index:number){
-        this.setFrame(Tile.frames[index])
+    public setFrameIndex(index: number) {
+        if(index>=Tile.frames.length) return false;
+        this.setFrame(Tile.frames[index]);
+        return true;
     }
 
     public clear() {
