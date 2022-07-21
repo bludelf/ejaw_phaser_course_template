@@ -61,8 +61,51 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager.createTile();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
+        const restart = this.add.image(100, 100, "ui-restart");
+        restart.setScale(0.5);
+
+        restart.setInteractive();
+        restart.on("pointerdown", () => {
+            this.restartGame();
+        }, this);
+
+        //Стоит ли использовать методы button Phaser3 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-buttons/
+        //Как правильно поставить кнопки, не в статические координаты. Или лучше в статические.
+        const gridBigger = this.add.image(500, 100, "ui-coin");
+        const gridLower = this.add.image(300, 100, "ui-warning");
+
+        gridBigger.setInteractive();
+        gridLower.setInteractive();
+
+        gridBigger.on("pointerdown", () => {
+            this.changeGrid(2);
+        }, this);
+        gridLower.on("pointerdown", () => {
+            this.changeGrid(-2);
+        }, this);
+
+
+        
+        
+
+
 
         this.events;
+    }
+
+    private changeGrid(num:number){
+        // this.tilemanager.changeGrid(num);
+        // this.restartGame();
+
+        if (Example2.grid_x_size + num > 10) return;
+        if (Example2.grid_y_size + num < 4) return;
+        Example2.grid_x_size += num;
+        Example2.grid_y_size += num;
+        this.restartGame();
+    }
+
+    private restartGame(){
+        this.scene.start("Example2");
     }
 
     public keyListener(inputedKey) {
@@ -70,25 +113,21 @@ export default class Example2 extends Phaser.Scene {
         const dir = { x: 0, y: 0 };
         switch (inputedKey.key) {
             case "ArrowRight":
-                console.log("You have pressed right arrow");
                 dir.x = 1;
                 dir.y = 0;
                 break;
 
             case "ArrowLeft":
-                console.log("You have pressed left arrow");
                 dir.x = -1;
                 dir.y = 0;
                 break;
 
             case "ArrowDown":
-                console.log("You have pressed down arrow");
                 dir.x = 0;
                 dir.y = 1;
                 break;
 
             case "ArrowUp":
-                console.log("You have pressed top arrow");
                 dir.x = 0;
                 dir.y = -1;
                 break;

@@ -1,5 +1,5 @@
 export const image = {
-    ui: ["background-tile", "coin", "warning", "hand", "emptytile"],
+    ui: ["background-tile", "coin", "warning", "hand", "emptytile", "restart", "scorepanel"],
 };
 
 export const spine = {
