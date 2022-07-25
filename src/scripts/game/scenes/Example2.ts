@@ -1,7 +1,5 @@
-import { Data, GameObjects } from "phaser";
-import { WIDTH, CENTER_X, CENTER_Y } from "scripts/util/globals";
-import { Popup } from "./Example2/CustomPopup";
 import { List } from "scripts/util/extra";
+import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
@@ -65,9 +63,15 @@ export default class Example2 extends Phaser.Scene {
         restart.setScale(0.5);
 
         restart.setInteractive();
-        restart.on("pointerdown", () => {
-            this.restartGame();
-        }, this);
+        restart.on(
+            "pointerdown",
+            () => {
+                this.restartGame();
+            },
+            this
+        );
+
+        //localstorage  - для максимального скора.
 
         //Стоит ли использовать методы button Phaser3 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-buttons/
         //Как правильно поставить кнопки, не в статические координаты. Или лучше в статические.
@@ -77,34 +81,35 @@ export default class Example2 extends Phaser.Scene {
         gridBigger.setInteractive();
         gridLower.setInteractive();
 
-        gridBigger.on("pointerdown", () => {
-            this.changeGrid(2);
-        }, this);
-        gridLower.on("pointerdown", () => {
-            this.changeGrid(-2);
-        }, this);
-
-
-        
-        
-
-
+        gridBigger.on(
+            "pointerdown",
+            () => {
+                this.changeGrid(2);
+            },
+            this
+        );
+        gridLower.on(
+            "pointerdown",
+            () => {
+                this.changeGrid(-2);
+            },
+            this
+        );
 
         this.events;
     }
 
-    private changeGrid(num:number){
-        // this.tilemanager.changeGrid(num);
-        // this.restartGame();
-
-        if (Example2.grid_x_size + num > 10) return;
+    private changeGrid(num: number) {
+        if (Example2.grid_x_size + num > 8) return;
         if (Example2.grid_y_size + num < 4) return;
         Example2.grid_x_size += num;
         Example2.grid_y_size += num;
         this.restartGame();
     }
 
-    private restartGame(){
+    private restartGame() {
+        this.grid = [];
+        this.scene.stop();
         this.scene.start("Example2");
     }
 
@@ -141,6 +146,14 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public createTileManager() {
+        console.log(
+            Example2.grid_x_size,
+            "=================================x+=========="
+        );
+        console.log(
+            Example2.grid_y_size,
+            "=================================y+=========="
+        );
         this.tilemanager = new TileManager(
             this,
             Example2.grid_x_size,

@@ -125,11 +125,4 @@ export default class TileManager extends Phaser.GameObjects.Group {
             this.add(new Tile(this.scene));
         }
     }
-
-    public changeGrid(num) {
-        if (this.rows + num > 10) return;
-        if (this.rows + num < 4) return;
-        this.rows += num;
-        this.cols += num;
-    }
 }
