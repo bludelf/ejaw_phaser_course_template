@@ -1,3 +1,4 @@
+import Example2 from "../Example2";
 import Tile from "./Tile";
 
 export default class TileManager extends Phaser.GameObjects.Group {
@@ -7,6 +8,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
     private rnd = new Phaser.Math.RandomDataGenerator([
         `${Phaser.Math.Between(0, 1000)}`,
     ]);
+    
 
     constructor(
         scene: Phaser.Scene,
@@ -19,6 +21,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         this.cols = cols;
         this.rows = rows;
         this.grid = grid;
+        Example2.score = 0;
 
         this.initTiles();
         this.scene.add.existing(this);
@@ -45,6 +48,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         newTile.setGridPosition(tileid, this.grid, this.cols, this.rows);
         newTile.activate();
 
+        Example2.score += Math.pow(2, newTile.getFrameIndex() + 1);
         return true;
     }
 

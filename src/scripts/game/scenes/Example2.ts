@@ -5,6 +5,8 @@ import TileManager from "./Example2/TileManager";
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
     static grid_y_size = 8;
+    static score: number;
+    static max_score: number;
 
     public grid: Phaser.Math.Vector3[][] = [];
 
@@ -57,6 +59,7 @@ export default class Example2 extends Phaser.Scene {
         this.createTileManager();
         this.tilemanager.createTile();
         this.tilemanager.createTile();
+        this.checkValueInLocalStorage();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         const restart = this.add.image(100, 100, "ui-restart");
@@ -73,10 +76,8 @@ export default class Example2 extends Phaser.Scene {
 
         //localstorage  - для максимального скора.
 
-        //Стоит ли использовать методы button Phaser3 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-buttons/
-        //Как правильно поставить кнопки, не в статические координаты. Или лучше в статические.
-        const gridBigger = this.add.image(500, 100, "ui-coin");
-        const gridLower = this.add.image(300, 100, "ui-warning");
+        const gridBigger = this.add.image(300, 100, "ui-coin");
+        const gridLower = this.add.image(200, 100, "ui-warning");
 
         gridBigger.setInteractive();
         gridLower.setInteractive();
@@ -142,18 +143,11 @@ export default class Example2 extends Phaser.Scene {
             this.input.keyboard.enabled = true;
             this.tilemanager.createTile();
             this.tilemanager.createTile();
+            this.checkValueInLocalStorage();
         });
     }
 
     public createTileManager() {
-        console.log(
-            Example2.grid_x_size,
-            "=================================x+=========="
-        );
-        console.log(
-            Example2.grid_y_size,
-            "=================================y+=========="
-        );
         this.tilemanager = new TileManager(
             this,
             Example2.grid_x_size,
@@ -168,5 +162,19 @@ export default class Example2 extends Phaser.Scene {
             image.setScale(0.5);
             image.setDepth(0);
         });
+    }
+
+    private checkValueInLocalStorage() {
+        if (!localStorage.getItem("Max_score")) {
+            localStorage.setItem("Max_score", "0");
+            return;
+        }
+        
+        if(Example2.score > Example2.max_score){
+            localStorage.setItem("Max_score", String(Example2.score));
+        }
+
+        Example2.max_score = Number(localStorage.getItem("Max_score"));
+        return;
     }
 }
