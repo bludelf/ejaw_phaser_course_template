@@ -2,6 +2,7 @@ import "phaser";
 import "phaser/plugins/spine/dist/SpinePlugin";
 import Boot from "./game/scenes/Boot";
 import Example2 from "./game/scenes/Example2";
+import UI from "./game/scenes/UI";
 import { resize } from "./util/extra";
 import { FPS, HEIGHT, WIDTH } from "./util/globals";
 import * as rexcharactercacheplugin from "./util/rexcharactercacheplugin.min.js";
@@ -17,7 +18,7 @@ const config = {
     },
     width: WIDTH,
     height: HEIGHT,
-    scene: [Boot, Example2],
+    scene: [Boot, UI, Example2],
     physics: {
         default: "arcade",
         arcade: {

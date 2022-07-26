@@ -1,6 +1,7 @@
 import { List } from "scripts/util/extra";
 import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 import TileManager from "./Example2/TileManager";
+import UI from "./UI";
 
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
@@ -17,7 +18,17 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public init() {
+        this.cameras.main.zoom = 1;
         this.init_grid();
+
+        this.game.events.on("changeGrid", this.changeGrid.bind(this));
+        this.game.events.on("restartGame", this.restartGame.bind(this));
+        this.events.once("shutdown", () => {
+           this.game.events.off("changeGrid"); 
+           this.game.events.off("restartGame");
+        });
+
+        this.cameras.main.zoom = 1 / (Example2.grid_x_size / 8);
     }
 
     public init_grid() {
@@ -62,40 +73,6 @@ export default class Example2 extends Phaser.Scene {
         this.checkValueInLocalStorage();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
-        const restart = this.add.image(100, 100, "ui-restart");
-        restart.setScale(0.5);
-
-        restart.setInteractive();
-        restart.on(
-            "pointerdown",
-            () => {
-                this.restartGame();
-            },
-            this
-        );
-
-        //localstorage  - для максимального скора.
-
-        const gridBigger = this.add.image(300, 100, "ui-coin");
-        const gridLower = this.add.image(200, 100, "ui-warning");
-
-        gridBigger.setInteractive();
-        gridLower.setInteractive();
-
-        gridBigger.on(
-            "pointerdown",
-            () => {
-                this.changeGrid(2);
-            },
-            this
-        );
-        gridLower.on(
-            "pointerdown",
-            () => {
-                this.changeGrid(-2);
-            },
-            this
-        );
 
         this.events;
     }
@@ -144,6 +121,7 @@ export default class Example2 extends Phaser.Scene {
             this.tilemanager.createTile();
             this.tilemanager.createTile();
             this.checkValueInLocalStorage();
+            UI.changeScore();
         });
     }
 
@@ -169,8 +147,8 @@ export default class Example2 extends Phaser.Scene {
             localStorage.setItem("Max_score", "0");
             return;
         }
-        
-        if(Example2.score > Example2.max_score){
+
+        if (Example2.score > Example2.max_score) {
             localStorage.setItem("Max_score", String(Example2.score));
         }
 

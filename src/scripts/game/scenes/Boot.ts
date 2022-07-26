@@ -100,6 +100,7 @@ export default class Boot extends Phaser.Scene {
 
         this.time.delayedCall(50, () => {
             this.scene.start("Example2");
+            this.scene.launch("UI");
         });
     }
 
