@@ -24,8 +24,8 @@ export default class Example2 extends Phaser.Scene {
         this.game.events.on("changeGrid", this.changeGrid.bind(this));
         this.game.events.on("restartGame", this.restartGame.bind(this));
         this.events.once("shutdown", () => {
-           this.game.events.off("changeGrid"); 
-           this.game.events.off("restartGame");
+            this.game.events.off("changeGrid");
+            this.game.events.off("restartGame");
         });
 
         this.cameras.main.zoom = 1 / (Example2.grid_x_size / 8);
@@ -66,6 +66,7 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public create() {
+        
         this.create_blank_grid();
         this.createTileManager();
         this.tilemanager.createTile();
@@ -143,16 +144,21 @@ export default class Example2 extends Phaser.Scene {
     }
 
     private checkValueInLocalStorage() {
-        if (!localStorage.getItem("Max_score")) {
-            localStorage.setItem("Max_score", "0");
+        if (!localStorage.getItem(`Max_score${Example2.grid_x_size}`)) {
+            localStorage.setItem(`Max_score${Example2.grid_x_size}`, "0");
             return;
         }
 
         if (Example2.score > Example2.max_score) {
-            localStorage.setItem("Max_score", String(Example2.score));
+            localStorage.setItem(
+                `Max_score${Example2.grid_x_size}`,
+                String(Example2.score)
+            );
         }
 
-        Example2.max_score = Number(localStorage.getItem("Max_score"));
+        Example2.max_score = Number(
+            localStorage.getItem(`Max_score${Example2.grid_x_size}`)
+        );
         return;
     }
 }

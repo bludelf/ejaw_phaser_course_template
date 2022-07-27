@@ -3,9 +3,8 @@ import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 import Example2 from "./Example2";
 
 export default class UI extends Phaser.Scene {
-
-    static score:Phaser.GameObjects.Text;
-    static max_score:Phaser.GameObjects.Text;
+    static score: Phaser.GameObjects.Text;
+    static max_score: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -14,7 +13,7 @@ export default class UI extends Phaser.Scene {
     }
 
     init() {
-        this.cameras.add(0,0, WIDTH, HEIGHT);
+        this.cameras.add(0, 0, WIDTH, HEIGHT);
     }
 
     create() {
@@ -53,20 +52,25 @@ export default class UI extends Phaser.Scene {
 
         const scores = this.add.image(CENTER_X, 200, "ui-scorepanel");
 
-        UI.score = this.add.text(CENTER_X/1.75, 200, `${Example2.score}`, {
+        UI.score = this.add.text(CENTER_X / 1.75, 200, `${Example2.score}`, {
             fontSize: "48px",
-            color: "white" 
+            color: "white",
         });
         UI.score.setOrigin(0, 0.5);
-        
-        UI.max_score = this.add.text(CENTER_X*1.25, 200, `${Example2.max_score}`, {
-            fontSize: "48px",
-            color: "white" 
-        });
+
+        UI.max_score = this.add.text(
+            CENTER_X * 1.25,
+            200,
+            `${Example2.max_score}`,
+            {
+                fontSize: "48px",
+                color: "white",
+            }
+        );
         UI.max_score.setOrigin(0, 0.5);
     }
 
-    static changeScore(){
+    static changeScore() {
         UI.score.setText(Example2.score.toString());
         UI.max_score.setText(Example2.max_score.toString());
     }
