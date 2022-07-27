@@ -27,6 +27,7 @@ export default class Example2 extends Phaser.Scene {
             this.game.events.off("changeGrid");
             this.game.events.off("restartGame");
         });
+        this.checkValueInLocalStorage();
 
         this.cameras.main.zoom = 1 / (Example2.grid_x_size / 8);
     }
