@@ -3,8 +3,6 @@ import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 import Example2 from "./Example2";
 
 export default class UI extends Phaser.Scene {
-    static score: Phaser.GameObjects.Text;
-    static max_score: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -50,28 +48,22 @@ export default class UI extends Phaser.Scene {
             this
         );
 
-        const scores = this.add.image(CENTER_X, 200, "ui-scorepanel");
+        this.add.image(CENTER_X, 200, "ui-scorepanel");
 
-        UI.score = this.add.text(CENTER_X / 1.75, 200, `${Example2.score}`, {
+        const score = this.add.text(CENTER_X / 1.75, 200, `4`, {
             fontSize: "48px",
             color: "white",
+        }).setOrigin(0.5, 0.5);
+        const ms = localStorage.getItem(`Max_score${Example2.grid_x_size}`)?localStorage.getItem(`Max_score${Example2.grid_x_size}`):4;
+        console.log(ms)
+        const max_score = this.add.text(CENTER_X * 1.25, 200, `${ms}`, {
+            fontSize: "48px",
+            color: "white",
+        }).setOrigin(0.5, 0.5);
+
+        this.game.events.on("setScore", (current:number, max: number) => {
+            score.setText(current.toString());
+            max_score.setText(max.toString());
         });
-        UI.score.setOrigin(0, 0.5);
-
-        UI.max_score = this.add.text(
-            CENTER_X * 1.25,
-            200,
-            `${Example2.max_score}`,
-            {
-                fontSize: "48px",
-                color: "white",
-            }
-        );
-        UI.max_score.setOrigin(0, 0.5);
-    }
-
-    static changeScore() {
-        UI.score.setText(Example2.score.toString());
-        UI.max_score.setText(Example2.max_score.toString());
     }
 }

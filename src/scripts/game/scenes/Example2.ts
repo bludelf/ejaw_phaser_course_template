@@ -7,7 +7,7 @@ export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
     static grid_y_size = 8;
     static score: number;
-    static max_score: number;
+    public max_score: number;
 
     public grid: Phaser.Math.Vector3[][] = [];
 
@@ -27,7 +27,8 @@ export default class Example2 extends Phaser.Scene {
             this.game.events.off("changeGrid");
             this.game.events.off("restartGame");
         });
-
+        this.checkValueInLocalStorage();
+        this.game.events.emit("setScore", Example2.score, this.max_score);
         this.cameras.main.zoom = 1 / (Example2.grid_x_size / 8);
     }
 
@@ -74,8 +75,8 @@ export default class Example2 extends Phaser.Scene {
         this.checkValueInLocalStorage();
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
-
-        this.events;
+        this.game.events.emit("setScore", Example2.score, this.max_score);
+        
     }
 
     private changeGrid(num: number) {
@@ -122,7 +123,7 @@ export default class Example2 extends Phaser.Scene {
             this.tilemanager.createTile();
             this.tilemanager.createTile();
             this.checkValueInLocalStorage();
-            UI.changeScore();
+            this.game.events.emit("setScore", Example2.score, this.max_score);
         });
     }
 
@@ -143,20 +144,24 @@ export default class Example2 extends Phaser.Scene {
         });
     }
 
+    public changeScore(){
+        return;
+    }
+
     private checkValueInLocalStorage() {
         if (!localStorage.getItem(`Max_score${Example2.grid_x_size}`)) {
-            localStorage.setItem(`Max_score${Example2.grid_x_size}`, "0");
+            localStorage.setItem(`Max_score${Example2.grid_x_size}`, "4");
             return;
         }
 
-        if (Example2.score > Example2.max_score) {
+        if (Example2.score > this.max_score) {
             localStorage.setItem(
                 `Max_score${Example2.grid_x_size}`,
                 String(Example2.score)
             );
         }
 
-        Example2.max_score = Number(
+        this.max_score = Number(
             localStorage.getItem(`Max_score${Example2.grid_x_size}`)
         );
         return;
