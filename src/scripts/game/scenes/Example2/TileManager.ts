@@ -8,7 +8,6 @@ export default class TileManager extends Phaser.GameObjects.Group {
     private rnd = new Phaser.Math.RandomDataGenerator([
         `${Phaser.Math.Between(0, 1000)}`,
     ]);
-    
 
     constructor(
         scene: Phaser.Scene,
@@ -55,6 +54,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
     public moveTiles(dir_x: number, dir_y: number) {
         const promises = new Array();
         const childs = this.getMatching("active", true);
+        console.log(childs);
         for (let i = 0; i < childs.length; i++) {
             const child = childs[i];
             let { x, y } = child.getGridPosition();

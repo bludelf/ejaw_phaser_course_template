@@ -67,7 +67,6 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public create() {
-
         this.create_blank_grid();
         this.createTileManager();
         this.tilemanager.createTile();
@@ -76,7 +75,6 @@ export default class Example2 extends Phaser.Scene {
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         this.game.events.emit("setScore", Example2.score, this.max_score);
-
     }
 
     private changeGrid(num: number) {
@@ -144,7 +142,7 @@ export default class Example2 extends Phaser.Scene {
         });
     }
 
-    public changeScore(){
+    public changeScore() {
         return;
     }
 
