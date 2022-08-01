@@ -55,6 +55,9 @@ export default class TileManager extends Phaser.GameObjects.Group {
         const promises = new Array();
         const childs = this.getMatching("active", true);
         console.log(childs);
+        
+        childs.sort((a,b) => a.grid_x > b.grid_x? 1 : -1)
+        console.log(childs);
         for (let i = 0; i < childs.length; i++) {
             const child = childs[i];
             let { x, y } = child.getGridPosition();
