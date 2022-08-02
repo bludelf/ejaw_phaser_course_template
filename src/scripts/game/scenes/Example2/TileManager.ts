@@ -54,52 +54,62 @@ export default class TileManager extends Phaser.GameObjects.Group {
     public moveTiles(dir_x: number, dir_y: number) {
         const promises = new Array();
         const childs = this.getMatching("active", true);
-        console.log(childs);
+        childs.sort((obj1, obj2) => {
+            const grid_pos_1 = obj1.position % Example2.grid_x_size;
+            const grid_pos_2 = obj2.position % Example2.grid_x_size;
+
+            return grid_pos_2 - grid_pos_1
+        })
         
         childs.sort((a,b) => a.grid_x > b.grid_x? 1 : -1)
         console.log(childs);
-        for (let i = 0; i < childs.length; i++) {
-            const child = childs[i];
-            let { x, y } = child.getGridPosition();
-            x = x + dir_x;
-            y = y + dir_y;
-            let countMoves = 0;
-
-            while (this.canMove(x, y, child.getFrameIndex())) {
-                const posGrid = this.grid[x][y].z;
-                child.updateGridPosition(
-                    posGrid,
-                    this.grid,
-                    this.cols,
-                    this.rows
-                );
+        let loop = true;
+        while(loop){
+            loop = false;
+            for (let i = 0; i < childs.length; i++) {
+                const child = childs[i];
+                let { x, y } = child.getGridPosition();
                 x = x + dir_x;
                 y = y + dir_y;
-                countMoves++;
-            }
-
-            promises.push(
-                child.updatePosition(
-                    this.grid,
-                    this.cols,
-                    this.rows,
-                    countMoves
-                )
-            );
-
-            const possibleTiles = this.getMatching(
-                "grid_position",
-                child.grid_position
-            );
-
-            if (possibleTiles.length > 1) {
-                possibleTiles[0].setFrameIndex(
-                    possibleTiles[0].getFrameIndex() + 1
+                let countMoves = 0;
+    
+                while (this.canMove(x, y, child.getFrameIndex())) {
+                    const posGrid = this.grid[x][y].z;
+                    child.updateGridPosition(
+                        posGrid,
+                        this.grid,
+                        this.cols,
+                        this.rows
+                    );
+                    x = x + dir_x;
+                    y = y + dir_y;
+                    countMoves++;
+                    loop = true;
+                }
+    
+                promises.push(
+                    child.updatePosition(
+                        this.grid,
+                        this.cols,
+                        this.rows,
+                        countMoves
+                    )
                 );
-
-                possibleTiles[1].clear();
+    
+                const possibleTiles = this.getMatching(
+                    "grid_position",
+                    child.grid_position
+                );
+    
+                if (possibleTiles.length > 1) {
+                    possibleTiles[0].setFrameIndex(
+                        possibleTiles[0].getFrameIndex() + 1
+                    );
+    
+                    possibleTiles[1].clear();
+                }
             }
-        }
+        }        
 
         return Promise.all(promises);
     }
