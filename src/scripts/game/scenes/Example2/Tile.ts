@@ -43,14 +43,13 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     public updateGridPosition(
-        position: number,
-        grid: Phaser.Math.Vector3[][],
-        cols: number,
-        rows: number
+        grid_x:number,
+        grid_y:number,
+        cols:number
     ) {
-        this.grid_position = position;
-        this.grid_x = Math.floor(position / cols);
-        this.grid_y = position % rows;
+        this.grid_x = grid_x;
+        this.grid_y = grid_y;
+        this.grid_position = grid_x * cols + grid_y;
     }
 
     public getGridPosition() {
@@ -64,26 +63,21 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     public updatePosition(
         grid: Phaser.Math.Vector3[][],
-        cols: number,
-        rows: number,
         countMoves: number
     ) {
         return new Promise((resolve) => {
             if (this.grid_position === -1) resolve(undefined);
-            const position = this.grid_position;
-            const x = grid[Math.floor(position / cols)][position % rows].x;
-            const y = grid[Math.floor(position / cols)][position % rows].y;
 
-            const tween = this.scene.tweens.add({
+           
+            const x = grid[this.grid_x][this.grid_y].x;
+            const y = grid[this.grid_x][this.grid_y].y;
+
+            this.scene.tweens.add({
                 targets: this,
                 x: x,
                 y: y,
-                ease: "Linear",
                 duration: countMoves * 50,
-                onComplete: () => {
-                    tween.remove();
-                    resolve(undefined);
-                },
+                onComplete: resolve,
             });
         });
     }
@@ -92,10 +86,10 @@ export default class Tile extends Phaser.GameObjects.Image {
         return Tile.frames.indexOf(String(this.frame.name));
     }
 
-    public setFrameIndex(index: number) {
-        if(index>=Tile.frames.length) return false;
-        this.setFrame(Tile.frames[index]);
-        return true;
+    public upgrade(){
+        const frame = this.getFrameIndex();
+
+        this.setFrameIndex(frame + 1);
     }
 
     public clear() {
@@ -107,5 +101,11 @@ export default class Tile extends Phaser.GameObjects.Image {
     public activate() {
         this.setVisible(true);
         this.setActive(true);
+    }
+
+    private setFrameIndex(index: number) {
+        if(index>=Tile.frames.length) return false;
+        this.setFrame(Tile.frames[index]);
+        return true;
     }
 }

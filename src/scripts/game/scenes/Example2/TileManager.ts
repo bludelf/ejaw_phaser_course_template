@@ -51,86 +51,54 @@ export default class TileManager extends Phaser.GameObjects.Group {
         return true;
     }
 
-    public moveTiles(dir_x: number, dir_y: number) {
-        const promises = new Array();
-        const childs = this.getMatching("active", true);
-        console.log(childs);
-        childs.sort((obj1, obj2) => {
-            const grid_pos_1 = obj1.grid_position % Example2.grid_x_size;
-            const grid_pos_2 = obj2.grid_position % Example2.grid_x_size;
+    public async moveTiles(dir_x: number, dir_y: number) {
+       
+        let isMoving = <Promise<unknown>[]>[Promise.resolve()];
+        while (isMoving.length) {
+            isMoving.length = 0;
+            const childs = this.sortChilds(dir_x, dir_y);
 
-            return grid_pos_2 - grid_pos_1;
-        });
+            childs.forEach((tile:Tile) => {
+                const { x, y } = tile.getGridPosition();
+                const [ futureX, futureY ] = [ x + dir_x, y + dir_y];
 
-        childs.sort((a, b) => (a.grid_x > b.grid_x ? 1 : -1));
+                const canMove = this.canMove(futureX, futureY, tile.getFrameIndex());
+                if (!canMove) return;
 
-        let loop = true;
-        while (loop) {
-            loop = false;
-            for (let i = 0; i < childs.length; i++) {
-                const child = childs[i];
-                let { x, y } = child.getGridPosition();
-                x = x + dir_x;
-                y = y + dir_y;
-                let countMoves = 0;
+                tile.updateGridPosition(futureX, futureY, this.cols);
 
-                while (this.canMove(x, y, child.getFrameIndex())) {
-                    const posGrid = this.grid[x][y].z;
-                    child.updateGridPosition(
-                        posGrid,
-                        this.grid,
-                        this.cols,
-                        this.rows
-                    );
-                    x = x + dir_x;
-                    y = y + dir_y;
-                    countMoves++;
-                    loop = true;
-                }
+                isMoving.push(
+                    tile.updatePosition(this.grid, 1).then(()=>{
+                        if(typeof canMove == "boolean") return;
 
-                promises.push(
-                    child.updatePosition(
-                        this.grid,
-                        this.cols,
-                        this.rows,
-                        countMoves
-                    )
+                        canMove.clear();
+                        tile.upgrade();
+                    })
                 );
-
-                const possibleTiles = this.getMatching(
-                    "grid_position",
-                    child.grid_position
-                );
-
-                if (possibleTiles.length > 1) {
-                    possibleTiles[0].setFrameIndex(
-                        possibleTiles[0].getFrameIndex() + 1
-                    );
-
-                    possibleTiles[1].clear();
-                }
-            }
+            });
+            await Promise.all(isMoving);
         }
 
-        return Promise.all(promises);
+        return Promise.resolve();
     }
 
-    private canMove(x, y, frame) {
+    private canMove(x:number, y:number, frame:number): boolean|Tile {
         if (x >= this.rows) return false;
         if (y >= this.cols) return false;
         if (x < 0) return false;
         if (y < 0) return false;
+
         const posGrid = this.grid[x][y].z;
         const possibleTiles = this.getMatching("grid_position", posGrid);
-        if (possibleTiles.length) {
-            if (frame === possibleTiles[0].getFrameIndex()) {
-                return true;
-            }
 
-            return false;
+        if (!possibleTiles.length) return true;
+
+        const tile = possibleTiles[0];
+        if(frame === tile.getFrameIndex()){
+            return tile;
         }
 
-        return true;
+        return false;
     }
 
     private destroyTile(x: number, y: number) {
@@ -142,5 +110,25 @@ export default class TileManager extends Phaser.GameObjects.Group {
         for (let i = 0; i < this.cols * this.rows; i++) {
             this.add(new Tile(this.scene));
         }
+    }
+
+    private sortChilds(dir_x, dir_y) {
+        const childs = this.getMatching("active", true);
+
+        const dir = dir_x ? dir_x : dir_y;
+        const size = dir_x ? Example2.grid_x_size : Example2.grid_y_size;
+
+        return childs.sort((obj1, obj2) => {
+            const grid_pos_1 = obj1.grid_position % size;
+            const grid_pos_2 = obj2.grid_position % size;
+
+            if(dir > 0){
+                return grid_pos_2 - grid_pos_1;
+            }
+            else{
+                return grid_pos_1 - grid_pos_2;
+            }
+            
+        });
     }
 }
