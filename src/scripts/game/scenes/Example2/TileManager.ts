@@ -52,7 +52,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public async moveTiles(dir_x: number, dir_y: number) {
-        let isMoving = <Promise<unknown>[]>[Promise.resolve()];
+        const isMoving = <Promise<unknown>[]>[Promise.resolve()];
         while (isMoving.length) {
             isMoving.length = 0;
             const childs = this.sortChilds(dir_x, dir_y);
@@ -72,7 +72,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
 
                 isMoving.push(
                     tile.updatePosition(this.grid, 1).then(() => {
-                        if (typeof canMove == "boolean") return;
+                        if (typeof canMove === "boolean") return;
 
                         canMove.clear();
                         tile.upgrade();
