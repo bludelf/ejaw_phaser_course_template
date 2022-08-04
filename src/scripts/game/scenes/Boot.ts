@@ -38,7 +38,6 @@ export default class Boot extends Phaser.Scene {
     }
 
     public preload() {
-        
         this.createBackground();
         this.createLoaderBar();
 
@@ -88,9 +87,14 @@ export default class Boot extends Phaser.Scene {
 
         this.load.spritesheet("tiles", "assets/spritesheet/tiles.png", {
             frameWidth: 200,
-            frameHeight: 200
+            frameHeight: 200,
         });
-        this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
+        this.load.scenePlugin(
+            "rexuiplugin",
+            "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
+            "rexUI",
+            "rexUI"
+        );
     }
 
     public create() {

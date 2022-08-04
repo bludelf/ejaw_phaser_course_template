@@ -52,24 +52,27 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public async moveTiles(dir_x: number, dir_y: number) {
-       
         let isMoving = <Promise<unknown>[]>[Promise.resolve()];
         while (isMoving.length) {
             isMoving.length = 0;
             const childs = this.sortChilds(dir_x, dir_y);
 
-            childs.forEach((tile:Tile) => {
+            childs.forEach((tile: Tile) => {
                 const { x, y } = tile.getGridPosition();
-                const [ futureX, futureY ] = [ x + dir_x, y + dir_y];
+                const [futureX, futureY] = [x + dir_x, y + dir_y];
 
-                const canMove = this.canMove(futureX, futureY, tile.getFrameIndex());
+                const canMove = this.canMove(
+                    futureX,
+                    futureY,
+                    tile.getFrameIndex()
+                );
                 if (!canMove) return;
 
                 tile.updateGridPosition(futureX, futureY, this.cols);
 
                 isMoving.push(
-                    tile.updatePosition(this.grid, 1).then(()=>{
-                        if(typeof canMove == "boolean") return;
+                    tile.updatePosition(this.grid, 1).then(() => {
+                        if (typeof canMove == "boolean") return;
 
                         canMove.clear();
                         tile.upgrade();
@@ -82,7 +85,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         return Promise.resolve();
     }
 
-    private canMove(x:number, y:number, frame:number): boolean|Tile {
+    private canMove(x: number, y: number, frame: number): boolean | Tile {
         if (x >= this.rows) return false;
         if (y >= this.cols) return false;
         if (x < 0) return false;
@@ -94,7 +97,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         if (!possibleTiles.length) return true;
 
         const tile = possibleTiles[0];
-        if(frame === tile.getFrameIndex()){
+        if (frame === tile.getFrameIndex()) {
             return tile;
         }
 
@@ -122,13 +125,11 @@ export default class TileManager extends Phaser.GameObjects.Group {
             const grid_pos_1 = obj1.grid_position % size;
             const grid_pos_2 = obj2.grid_position % size;
 
-            if(dir > 0){
+            if (dir > 0) {
                 return grid_pos_2 - grid_pos_1;
-            }
-            else{
+            } else {
                 return grid_pos_1 - grid_pos_2;
             }
-            
         });
     }
 }
