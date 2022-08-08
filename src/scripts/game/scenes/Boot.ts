@@ -89,12 +89,20 @@ export default class Boot extends Phaser.Scene {
             frameWidth: 200,
             frameHeight: 200,
         });
+        this.load.atlas(
+            "ui",
+            "assets/image/ui/ui.png",
+            "assets/image/ui/ui.json"
+        );
         this.load.scenePlugin(
             "rexuiplugin",
             "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js",
             "rexUI",
             "rexUI"
         );
+        this.load.audio("swipe", ["assets/audio/click.wav"]);
+        this.load.audio("background", ["assets/audio/Tavern_sound.mp3"]);
+        this.load.audio("best", ["assets/audio/symbol_highlight_pops.aac"]);
     }
 
     public create() {

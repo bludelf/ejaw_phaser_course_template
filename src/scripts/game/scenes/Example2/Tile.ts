@@ -6,24 +6,21 @@ export default class Tile extends Phaser.GameObjects.Image {
     public grid_y: number;
 
     static readonly frames = [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
+        "2.png",
+        "4.png",
+        "8.png",
+        "16.png",
+        "32.png",
+        "64.png",
+        "128.png",
+        "256.png",
+        "512.png",
+        "1024.png",
     ];
 
     constructor(scene: Phaser.Scene) {
         super(scene, 0, 0, "tiles", 0);
-        this.setScale(0.5);
+        this.setScale(0.95);
         this.clear();
         this.setDepth(1);
         this.scene.add.existing(this);
@@ -97,7 +94,8 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     private setFrameIndex(index: number) {
         if (index >= Tile.frames.length) return false;
-        this.setFrame(Tile.frames[index]);
+        //this.setFrame(Tile.frames[index]);
+        this.setTexture("ui", Tile.frames[index]);
         return true;
     }
 }

@@ -38,6 +38,7 @@ const config = {
     },
     callbacks: {
         postBoot: function (game: Phaser.Game) {
+            (<any>game).device.audio.aac = true;
             const onResize = () => {
                 resize(game, {
                     maxWidth: WIDTH,

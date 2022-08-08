@@ -12,6 +12,7 @@ export default class Example2 extends Phaser.Scene {
     public grid: Phaser.Math.Vector3[][] = [];
 
     private tilemanager: TileManager;
+    private swipe_sound: Phaser.Sound.BaseSound;
 
     constructor() {
         super({ key: "Example2" });
@@ -75,6 +76,21 @@ export default class Example2 extends Phaser.Scene {
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         this.game.events.emit("setScore", Example2.score, this.max_score);
+        this.swipe_sound = this.sound.add("swipe", {
+            volume: 1,
+        });
+        const background_sound = this.sound.add("background");
+        background_sound.addMarker({
+            name: "backmus",
+            start: 0.8,
+            duration: background_sound.duration - 1.0001,
+            config: {
+                delay: 0.0001,
+                volume: 0.1,
+                loop: true
+            },
+        });
+        background_sound.play("backmus");
     }
 
     private changeGrid(num: number) {
@@ -87,12 +103,14 @@ export default class Example2 extends Phaser.Scene {
 
     private restartGame() {
         this.grid = [];
+        this.sound.stopAll();
         this.scene.stop();
         this.scene.start("Example2");
     }
 
     public keyListener(inputedKey) {
         this.input.keyboard.enabled = false;
+        this.swipe_sound.play();
         const dir = { x: 0, y: 0 };
         switch (inputedKey.key) {
             case "ArrowRight":
@@ -136,8 +154,13 @@ export default class Example2 extends Phaser.Scene {
 
     public create_blank_grid() {
         this.grid.flat().forEach((element) => {
-            const image = this.add.image(element.x, element.y, "ui-emptytile");
-            image.setScale(0.5);
+            const image = this.add.sprite(
+                element.x,
+                element.y,
+                "ui",
+                "empy_tile.png"
+            );
+            image.setScale(0.95);
             image.setDepth(0);
         });
     }
@@ -153,6 +176,7 @@ export default class Example2 extends Phaser.Scene {
         }
 
         if (Example2.score > this.max_score) {
+            this.sound.play("best");
             localStorage.setItem(
                 `Max_score${Example2.grid_x_size}`,
                 String(Example2.score)
