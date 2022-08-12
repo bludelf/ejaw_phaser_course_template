@@ -27,9 +27,8 @@ export default class UI extends Phaser.Scene {
         this.add
         .text(135, 97, `RESTART`, {
             fontSize: "36px",
-            color: "black",
-            fontFamily: "impact_ttf",
-            fontStyle: "bold"
+            color: "#5f534f",
+            fontFamily: "impact_ttf"
         })
         .setOrigin(0.5, 0.5);
 
@@ -48,7 +47,7 @@ export default class UI extends Phaser.Scene {
         this.add.sprite(720, 97, "ui", "size_number.png");
         const grid_size_pallet = this.add.text(720, 97, `${Example2.grid_x_size}x${Example2.grid_y_size}`, {
             fontSize: "36px",
-            color: "black",
+            color: "#362f2d",
             fontFamily: "impact_ttf"
         }).setOrigin(0.5, 0.5);
 
@@ -73,11 +72,11 @@ export default class UI extends Phaser.Scene {
         this.add.sprite(CENTER_X, 97, "ui", "Score_pallet.png");
 
         const score = this.add
-            .text(CENTER_X-140, 80, `SCORE: 4`, {
+            .text(CENTER_X, 97, `SCORE: 4`, {
                 fontSize: "36px",
-                color: "black",
+                color: "#362f2d",
                 fontFamily: "impact_ttf"
-            })
+            }).setOrigin(0.5)
 
         this.add.sprite(CENTER_X, HEIGHT-70, "ui", "Panel_footer.png");
 
@@ -88,17 +87,15 @@ export default class UI extends Phaser.Scene {
         const max_score = this.add
             .text(CENTER_X, HEIGHT-72, `${ms}`, {
                 fontSize: "26px",
-                color: "black",
+                color: "#362f2d",
                 fontFamily: "impact_ttf"
             })
             .setOrigin(0.5, 0.5);
-            console.log(score);
 
         this.game.events.on("setScore", (current: number, max: number) => {
             score.setText("SCORE: " + current.toString());
             max_score.setText("" + max.toString());
             grid_size_pallet.setText(`${Example2.grid_x_size}x${Example2.grid_y_size}`);
-            console.log(score);
         });
 
         

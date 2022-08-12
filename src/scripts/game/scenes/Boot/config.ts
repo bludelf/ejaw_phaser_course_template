@@ -12,6 +12,7 @@ export const aseprite = {
 
 export const audio = {
     button: ["click.wav", "click.mp3"],
+    game: ["background.mp3", "slide.wav", "best.aac"]
 };
 
 export const multiatlas = {

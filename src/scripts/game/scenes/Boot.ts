@@ -100,9 +100,6 @@ export default class Boot extends Phaser.Scene {
             "rexUI",
             "rexUI"
         );
-        this.load.audio("swipe", ["assets/audio/click.wav"]);
-        this.load.audio("background", ["assets/audio/Tavern_sound.mp3"]);
-        this.load.audio("best", ["assets/audio/symbol_highlight_pops.aac"]);
     }
 
     public create() {

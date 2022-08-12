@@ -2,6 +2,7 @@ import { List } from "scripts/util/extra";
 import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 import TileManager from "./Example2/TileManager";
 import UI from "./UI";
+import { soundManager } from "scripts/util/globals";
 
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
@@ -76,21 +77,10 @@ export default class Example2 extends Phaser.Scene {
         //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         this.game.events.emit("setScore", Example2.score, this.max_score);
-        this.swipe_sound = this.sound.add("swipe", {
-            volume: 1,
-        });
-        const background_sound = this.sound.add("background");
-        background_sound.addMarker({
-            name: "backmus",
-            start: 0.8,
-            duration: background_sound.duration - 1.0001,
-            config: {
-                delay: 0.0001,
-                volume: 0.1,
-                loop: true
-            },
-        });
-        background_sound.play("backmus");
+        soundManager.play("game-background.mp3", {
+            volume: 0.05,
+            loop: true
+        })
     }
 
     private changeGrid(num: number) {
@@ -110,7 +100,7 @@ export default class Example2 extends Phaser.Scene {
 
     public keyListener(inputedKey) {
         this.input.keyboard.enabled = false;
-        this.swipe_sound.play();
+        
         const dir = { x: 0, y: 0 };
         switch (inputedKey.key) {
             case "ArrowRight":
@@ -176,7 +166,9 @@ export default class Example2 extends Phaser.Scene {
         }
 
         if (Example2.score > this.max_score) {
-            this.sound.play("best");
+           soundManager.play("game-best.aac", {
+            volume: 0.08
+           });
             localStorage.setItem(
                 `Max_score${Example2.grid_x_size}`,
                 String(Example2.score)

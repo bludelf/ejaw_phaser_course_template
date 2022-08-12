@@ -1,5 +1,6 @@
 import Example2 from "../Example2";
 import Tile from "./Tile";
+import { soundManager } from "scripts/util/globals";
 
 export default class TileManager extends Phaser.GameObjects.Group {
     private cols: number;
@@ -79,7 +80,9 @@ export default class TileManager extends Phaser.GameObjects.Group {
                     })
                 );
             });
+            
             await Promise.all(isMoving);
+            soundManager.play("game-slide.wav");
         }
 
         return Promise.resolve();
