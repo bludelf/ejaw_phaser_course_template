@@ -1,3 +1,4 @@
+import GridManager from "scripts/game/scenes/Example2/Grid";
 import Sound from "scripts/game/Sound";
 
 export const FPS = 10;
@@ -15,4 +16,4 @@ export const dataStorage = {
     bitmaps: {},
 };
 
-export const grid: Phaser.Math.Vector3[][] = [];
+export const gridManager = new GridManager();

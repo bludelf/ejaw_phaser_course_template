@@ -1,9 +1,8 @@
+import { gridManager } from "scripts/util/globals";
 import GridManager from "./Grid";
 
 export default class Tile extends Phaser.GameObjects.Image {
     public grid_position = -1;
-    public grid_x: number;
-    public grid_y: number;
     private grid: GridManager;
 
     static readonly frames = [
@@ -28,17 +27,18 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     public setGridPosition(position: number) {
-        this.grid.setGridPosition(position, this);
+        this.grid_position = position;
+        const cell = gridManager.getByID(position);
+        this.x = cell.x;
+        this.y = cell.y;
     }
 
-    public updateGridPosition(grid_x: number, grid_y: number, cols: number) {
-        this.grid_x = grid_x;
-        this.grid_y = grid_y;
-        this.grid_position = grid_x * cols + grid_y;
+    public updateGridPosition(grid_x: number, grid_y: number) {
+        this.grid_position = gridManager.getIDbyXY(grid_x, grid_y);
     }
 
     public getGridPosition() {
-        return { x: this.grid_x, y: this.grid_y };
+        return gridManager.getXYbyId(this.grid_position);
     }
 
     public clearGridPosition() {
@@ -50,13 +50,12 @@ export default class Tile extends Phaser.GameObjects.Image {
         return new Promise((resolve) => {
             if (this.grid_position === -1) resolve(undefined);
 
-            const x = this.grid.getGridX;
-            const y = this.grid.getGridX;
+            const cell = gridManager.getByID(this.grid_position);
 
             this.scene.tweens.add({
                 targets: this,
-                x: x,
-                y: y,
+                x: cell.x,
+                y: cell.y,
                 duration: countMoves * 50,
                 onComplete: resolve,
             });

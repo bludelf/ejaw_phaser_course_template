@@ -1,21 +1,15 @@
-import { soundManager } from "scripts/util/globals";
+import { gridManager, soundManager } from "scripts/util/globals";
 import Example2 from "../Example2";
 import GridManager from "./Grid";
 import Tile from "./Tile";
 
 export default class TileManager extends Phaser.GameObjects.Group {
-    private cols: number;
-    private rows: number;
-    private grid: GridManager;
     private rnd = new Phaser.Math.RandomDataGenerator([
         `${Phaser.Math.Between(0, 1000)}`,
     ]);
 
-    constructor(scene: Phaser.Scene, cols: number, rows: number) {
+    constructor(scene: Phaser.Scene) {
         super(scene);
-
-        this.cols = cols;
-        this.rows = rows;
         Example2.score = 0;
 
         this.initTiles();
@@ -23,9 +17,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public createTile() {
-        console.log("Pupipushkin");
-        console.log(this.grid.getFlatGrid());
-        const positionsAll = this.grid
+        const positionsAll = gridManager
             .getFlatGrid()
             .map((element) => element.z);
         const childs = this.getMatching("active", true);
@@ -68,7 +60,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
                 );
                 if (!canMove) return;
 
-                tile.updateGridPosition(futureX, futureY, this.cols);
+                tile.updateGridPosition(futureX, futureY);
 
                 isMoving.push(
                     tile.updatePosition(1).then(() => {
@@ -88,12 +80,12 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     private canMove(x: number, y: number, frame: number): boolean | Tile {
-        if (x >= this.rows) return false;
-        if (y >= this.cols) return false;
+        if (x >= GridManager.rows) return false;
+        if (y >= GridManager.cols) return false;
         if (x < 0) return false;
         if (y < 0) return false;
 
-        const posGrid = this.grid[x][y].z;
+        const posGrid = gridManager.getIDbyXY(x, y);
         const possibleTiles = this.getMatching("grid_position", posGrid);
 
         if (!possibleTiles.length) return true;
@@ -112,7 +104,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     private initTiles() {
-        for (let i = 0; i < this.cols * this.rows; i++) {
+        for (let i = 0; i < gridManager.size; i++) {
             this.add(new Tile(this.scene));
         }
     }
@@ -121,7 +113,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         const childs = this.getMatching("active", true);
 
         const dir = dir_x ? dir_x : dir_y;
-        const size = dir_x ? Example2.grid_x_size : Example2.grid_y_size;
+        const size = dir_x ? GridManager.rows : GridManager.cols;
 
         return childs.sort((obj1, obj2) => {
             const grid_pos_1 = obj1.grid_position % size;

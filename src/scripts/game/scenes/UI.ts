@@ -1,6 +1,5 @@
-import { HEIGHT, WIDTH } from "scripts/util/globals";
-import { CENTER_X, CENTER_Y } from "scripts/util/globals";
-import Example2 from "./Example2";
+import { CENTER_X, CENTER_Y, HEIGHT, WIDTH } from "scripts/util/globals";
+import GridManager from "./Example2/Grid";
 
 export default class UI extends Phaser.Scene {
     constructor() {
@@ -14,23 +13,22 @@ export default class UI extends Phaser.Scene {
     }
 
     create() {
-
         this.add
             .sprite(CENTER_X, CENTER_Y - 30, "ui", "Background.png")
             .setOrigin(0.5, 0.5);
 
         //const restart = this.add.image(100, 100, "ui-restart");
         this.add.sprite(CENTER_X, 100, "ui", "Panel_header.png");
-        
+
         const restart = this.add.sprite(135, 97, "ui", "Restart_Button.png");
-        
+
         this.add
-        .text(135, 97, `RESTART`, {
-            fontSize: "36px",
-            color: "#5f534f",
-            fontFamily: "impact_ttf"
-        })
-        .setOrigin(0.5, 0.5);
+            .text(135, 97, `RESTART`, {
+                fontSize: "36px",
+                color: "#5f534f",
+                fontFamily: "impact_ttf",
+            })
+            .setOrigin(0.5, 0.5);
 
         restart.setInteractive();
         restart.on(
@@ -43,13 +41,15 @@ export default class UI extends Phaser.Scene {
 
         const gridLower = this.add.sprite(800, 97, "ui", "Bigger_button.png");
         const gridBigger = this.add.sprite(640, 97, "ui", "Smaller_button.png");
-        
+
         this.add.sprite(720, 97, "ui", "size_number.png");
-        const grid_size_pallet = this.add.text(720, 97, `${Example2.grid_x_size}x${Example2.grid_y_size}`, {
-            fontSize: "36px",
-            color: "#362f2d",
-            fontFamily: "impact_ttf"
-        }).setOrigin(0.5, 0.5);
+        const grid_size_pallet = this.add
+            .text(720, 97, `${GridManager.rows}x${GridManager.cols}`, {
+                fontSize: "36px",
+                color: "#362f2d",
+                fontFamily: "impact_ttf",
+            })
+            .setOrigin(0.5, 0.5);
 
         gridBigger.setInteractive();
         gridLower.setInteractive();
@@ -75,29 +75,28 @@ export default class UI extends Phaser.Scene {
             .text(CENTER_X, 97, `SCORE: 4`, {
                 fontSize: "36px",
                 color: "#362f2d",
-                fontFamily: "impact_ttf"
-            }).setOrigin(0.5)
+                fontFamily: "impact_ttf",
+            })
+            .setOrigin(0.5);
 
-        this.add.sprite(CENTER_X, HEIGHT-70, "ui", "Panel_footer.png");
+        this.add.sprite(CENTER_X, HEIGHT - 70, "ui", "Panel_footer.png");
 
-        this.add.sprite(CENTER_X, HEIGHT-72, "ui", "Best_score.png");
-        const ms = localStorage.getItem(`Max_score${Example2.grid_x_size}`)
-            ? localStorage.getItem(`Max_score${Example2.grid_x_size}`)
+        this.add.sprite(CENTER_X, HEIGHT - 72, "ui", "Best_score.png");
+        const ms = localStorage.getItem(`Max_score${GridManager.rows}`)
+            ? localStorage.getItem(`Max_score${GridManager.rows}`)
             : 4;
         const max_score = this.add
-            .text(CENTER_X, HEIGHT-72, `${ms}`, {
+            .text(CENTER_X, HEIGHT - 72, `${ms}`, {
                 fontSize: "26px",
                 color: "#362f2d",
-                fontFamily: "impact_ttf"
+                fontFamily: "impact_ttf",
             })
             .setOrigin(0.5, 0.5);
 
         this.game.events.on("setScore", (current: number, max: number) => {
             score.setText("SCORE: " + current.toString());
             max_score.setText("" + max.toString());
-            grid_size_pallet.setText(`${Example2.grid_x_size}x${Example2.grid_y_size}`);
+            grid_size_pallet.setText(`${GridManager.rows}x${GridManager.cols}`);
         });
-
-        
     }
 }
