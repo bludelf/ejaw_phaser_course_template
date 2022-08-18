@@ -23,6 +23,8 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public createTile() {
+        console.log("Pupipushkin");
+        console.log(this.grid.getFlatGrid());
         const positionsAll = this.grid
             .getFlatGrid()
             .map((element) => element.z);
@@ -42,7 +44,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
 
         const tileid = this.rnd.pick(positionsFreePhaser.getArray());
         const newTile = this.getFirstDead() as Tile;
-        newTile.setGridPosition(tileid, this.grid, this.cols, this.rows);
+        newTile.setGridPosition(tileid);
         newTile.activate();
 
         Example2.score += Math.pow(2, newTile.getFrameIndex() + 1);
@@ -69,7 +71,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
                 tile.updateGridPosition(futureX, futureY, this.cols);
 
                 isMoving.push(
-                    tile.updatePosition(this.grid, 1).then(() => {
+                    tile.updatePosition(1).then(() => {
                         if (typeof canMove === "boolean") return;
 
                         canMove.clear();

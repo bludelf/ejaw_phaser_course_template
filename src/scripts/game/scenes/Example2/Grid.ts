@@ -7,13 +7,12 @@
 //grid need to initialize in global
 
 import { List } from "scripts/util/extra";
-import { CENTER_X, CENTER_Y } from "scripts/util/globals";
+import { CENTER_X, CENTER_Y, grid } from "scripts/util/globals";
 import Tile from "./Tile";
 
 export default class GridManager {
     public rows: number;
     public cols: number;
-    public grid: Phaser.Math.Vector3[][] = [];
 
     constructor(grid_x_size: number, grid_y_size: number) {
         this.rows = grid_x_size;
@@ -22,7 +21,7 @@ export default class GridManager {
     }
 
     public getGrid() {
-        return this.grid;
+        return grid;
     }
 
     public initGrid() {
@@ -47,13 +46,13 @@ export default class GridManager {
 
         coords.forEach((data, index) => {
             const grid_y = Math.floor(index / this.rows);
-            if (this.grid[grid_y] === undefined) {
-                this.grid[grid_y] = [];
+            if (grid[grid_y] === undefined) {
+                grid[grid_y] = [];
             }
-            this.grid[grid_y].push(
-                new Phaser.Math.Vector3(data.x, data.y, index)
-            );
+            grid[grid_y].push(new Phaser.Math.Vector3(data.x, data.y, index));
         });
+
+        console.log("Grid created");
     }
 
     public createBlankGrid(scene: Phaser.Scene) {
@@ -67,21 +66,31 @@ export default class GridManager {
             image.setScale(0.95);
             image.setDepth(0);
         });
+        console.log("blank Grid created");
     }
 
     public getFlatGrid() {
-        return this.grid.flat();
+        console.log(grid);
+        console.log(grid.flat());
+        return grid.flat();
     }
 
     public clearGrid() {
-        this.grid = [];
+        grid.length = 0;
     }
 
     public setGridPosition(position: number, tile: Tile) {
         tile.grid_position = position;
-        tile.x = this.grid[Math.floor(position / this.cols)][position % rows].x;
-        tile.y = this.grid[Math.floor(position / this.cols)][position % rows].y;
+        tile.x = grid[Math.floor(position / this.cols)][position % this.rows].x;
+        tile.y = grid[Math.floor(position / this.cols)][position % this.rows].y;
         tile.grid_x = Math.floor(position / this.cols);
         tile.grid_y = position % this.rows;
+    }
+
+    public getGridX(grid_x, grid_y) {
+        return grid[grid_x][grid_y].x;
+    }
+    public getGridY(grid_x, grid_y) {
+        return grid[grid_x][grid_y].y;
     }
 }

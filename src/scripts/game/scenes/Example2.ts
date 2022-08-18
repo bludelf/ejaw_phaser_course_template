@@ -42,7 +42,6 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager.createTile();
         this.tilemanager.createTile();
         this.checkValueInLocalStorage();
-        //this.input.keyboard.on("keydown", this.keyListener, this);
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         this.game.events.emit("setScore", Example2.score, this.max_score);
         soundManager.play("game-background.mp3", {

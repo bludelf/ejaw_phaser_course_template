@@ -27,12 +27,7 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.scene.add.existing(this);
     }
 
-    public setGridPosition(
-        position: number,
-        grid: Phaser.Math.Vector3[][],
-        cols: number,
-        rows: number
-    ) {
+    public setGridPosition(position: number) {
         this.grid.setGridPosition(position, this);
     }
 
@@ -51,12 +46,12 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.setFrameIndex(0);
     }
 
-    public updatePosition(grid: Phaser.Math.Vector3[][], countMoves: number) {
+    public updatePosition(countMoves: number) {
         return new Promise((resolve) => {
             if (this.grid_position === -1) resolve(undefined);
 
-            const x = grid[this.grid_x][this.grid_y].x;
-            const y = grid[this.grid_x][this.grid_y].y;
+            const x = this.grid.getGridX;
+            const y = this.grid.getGridX;
 
             this.scene.tweens.add({
                 targets: this,

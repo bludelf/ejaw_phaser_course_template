@@ -14,3 +14,5 @@ export const soundManager = new Sound();
 export const dataStorage = {
     bitmaps: {},
 };
+
+export const grid: Phaser.Math.Vector3[][] = [];
