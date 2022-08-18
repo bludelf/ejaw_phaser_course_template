@@ -1,8 +1,6 @@
-import { List } from "scripts/util/extra";
-import { CENTER_X, CENTER_Y } from "scripts/util/globals";
-import TileManager from "./Example2/TileManager";
-import UI from "./UI";
 import { soundManager } from "scripts/util/globals";
+import GridManager from "./Example2/Grid";
+import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
     static grid_x_size = 8;
@@ -10,7 +8,7 @@ export default class Example2 extends Phaser.Scene {
     static score: number;
     public max_score: number;
 
-    public grid: Phaser.Math.Vector3[][] = [];
+    public grid: GridManager;
 
     private tilemanager: TileManager;
     private swipe_sound: Phaser.Sound.BaseSound;
@@ -35,41 +33,11 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public init_grid() {
-        const grid_x_size = Example2.grid_x_size;
-        const grid_y_size = Example2.grid_y_size;
-
-        const coords = new List(grid_x_size * grid_y_size, () => ({
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
-            originX: 1,
-            originY: 1,
-        }));
-
-        Phaser.Actions.GridAlign(coords as any, {
-            cellWidth: 100,
-            cellHeight: 100,
-            x: CENTER_X - (grid_x_size * 100) / 2,
-            y: CENTER_Y - (grid_y_size * 100) / 2,
-            width: grid_x_size,
-            height: grid_y_size,
-            position: Phaser.Display.Align.LEFT_TOP,
-        });
-
-        coords.forEach((data, index) => {
-            const grid_y = Math.floor(index / grid_x_size);
-            if (this.grid[grid_y] === undefined) {
-                this.grid[grid_y] = [];
-            }
-            this.grid[grid_y].push(
-                new Phaser.Math.Vector3(data.x, data.y, index)
-            );
-        });
+        this.grid = new GridManager(Example2.grid_x_size, Example2.grid_y_size);
     }
 
     public create() {
-        this.create_blank_grid();
+        this.grid.createBlankGrid(this);
         this.createTileManager();
         this.tilemanager.createTile();
         this.tilemanager.createTile();
@@ -79,8 +47,8 @@ export default class Example2 extends Phaser.Scene {
         this.game.events.emit("setScore", Example2.score, this.max_score);
         soundManager.play("game-background.mp3", {
             volume: 0.05,
-            loop: true
-        })
+            loop: true,
+        });
     }
 
     private changeGrid(num: number) {
@@ -92,7 +60,7 @@ export default class Example2 extends Phaser.Scene {
     }
 
     private restartGame() {
-        this.grid = [];
+        this.grid.clearGrid();
         this.sound.stopAll();
         this.scene.stop();
         this.scene.start("Example2");
@@ -100,7 +68,7 @@ export default class Example2 extends Phaser.Scene {
 
     public keyListener(inputedKey) {
         this.input.keyboard.enabled = false;
-        
+
         const dir = { x: 0, y: 0 };
         switch (inputedKey.key) {
             case "ArrowRight":
@@ -137,22 +105,8 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager = new TileManager(
             this,
             Example2.grid_x_size,
-            Example2.grid_y_size,
-            this.grid
+            Example2.grid_y_size
         );
-    }
-
-    public create_blank_grid() {
-        this.grid.flat().forEach((element) => {
-            const image = this.add.sprite(
-                element.x,
-                element.y,
-                "ui",
-                "empy_tile.png"
-            );
-            image.setScale(0.95);
-            image.setDepth(0);
-        });
     }
 
     public changeScore() {
@@ -166,9 +120,9 @@ export default class Example2 extends Phaser.Scene {
         }
 
         if (Example2.score > this.max_score) {
-           soundManager.play("game-best.aac", {
-            volume: 0.08
-           });
+            soundManager.play("game-best.aac", {
+                volume: 0.08,
+            });
             localStorage.setItem(
                 `Max_score${Example2.grid_x_size}`,
                 String(Example2.score)

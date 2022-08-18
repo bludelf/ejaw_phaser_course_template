@@ -1,26 +1,21 @@
-import Example2 from "../Example2";
-import Tile from "./Tile";
 import { soundManager } from "scripts/util/globals";
+import Example2 from "../Example2";
+import GridManager from "./Grid";
+import Tile from "./Tile";
 
 export default class TileManager extends Phaser.GameObjects.Group {
     private cols: number;
     private rows: number;
-    private grid: Phaser.Math.Vector3[][];
+    private grid: GridManager;
     private rnd = new Phaser.Math.RandomDataGenerator([
         `${Phaser.Math.Between(0, 1000)}`,
     ]);
 
-    constructor(
-        scene: Phaser.Scene,
-        cols: number,
-        rows: number,
-        grid: Phaser.Math.Vector3[][]
-    ) {
+    constructor(scene: Phaser.Scene, cols: number, rows: number) {
         super(scene);
 
         this.cols = cols;
         this.rows = rows;
-        this.grid = grid;
         Example2.score = 0;
 
         this.initTiles();
@@ -28,7 +23,9 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public createTile() {
-        const positionsAll = this.grid.flat().map((element) => element.z);
+        const positionsAll = this.grid
+            .getFlatGrid()
+            .map((element) => element.z);
         const childs = this.getMatching("active", true);
         const positionsBusy = childs.map((element: Tile) => {
             return element.grid_position;
@@ -80,7 +77,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
                     })
                 );
             });
-            
+
             await Promise.all(isMoving);
             soundManager.play("game-slide.wav");
         }
