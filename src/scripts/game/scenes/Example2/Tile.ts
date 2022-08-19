@@ -28,17 +28,17 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     public setGridPosition(position: number) {
         this.grid_position = position;
-        const cell = gridManager.getByID(position);
+        const cell = gridManager.getCell(position);
         this.x = cell.x;
         this.y = cell.y;
     }
 
     public updateGridPosition(grid_x: number, grid_y: number) {
-        this.grid_position = gridManager.getIDbyXY(grid_x, grid_y);
+        this.grid_position = gridManager.getId(grid_x, grid_y);
     }
 
     public getGridPosition() {
-        return gridManager.getXYbyId(this.grid_position);
+        return gridManager.getCoords(this.grid_position);
     }
 
     public clearGridPosition() {
@@ -50,7 +50,7 @@ export default class Tile extends Phaser.GameObjects.Image {
         return new Promise((resolve) => {
             if (this.grid_position === -1) resolve(undefined);
 
-            const cell = gridManager.getByID(this.grid_position);
+            const cell = gridManager.getCell(this.grid_position);
 
             this.scene.tweens.add({
                 targets: this,

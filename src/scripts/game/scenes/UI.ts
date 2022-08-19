@@ -1,4 +1,10 @@
-import { CENTER_X, CENTER_Y, HEIGHT, WIDTH } from "scripts/util/globals";
+import {
+    CENTER_X,
+    CENTER_Y,
+    HEIGHT,
+    scoreManager,
+    WIDTH,
+} from "scripts/util/globals";
 import GridManager from "./Example2/Grid";
 
 export default class UI extends Phaser.Scene {
@@ -17,7 +23,6 @@ export default class UI extends Phaser.Scene {
             .sprite(CENTER_X, CENTER_Y - 30, "ui", "Background.png")
             .setOrigin(0.5, 0.5);
 
-        //const restart = this.add.image(100, 100, "ui-restart");
         this.add.sprite(CENTER_X, 100, "ui", "Panel_header.png");
 
         const restart = this.add.sprite(135, 97, "ui", "Restart_Button.png");
@@ -82,20 +87,17 @@ export default class UI extends Phaser.Scene {
         this.add.sprite(CENTER_X, HEIGHT - 70, "ui", "Panel_footer.png");
 
         this.add.sprite(CENTER_X, HEIGHT - 72, "ui", "Best_score.png");
-        const ms = localStorage.getItem(`Max_score${GridManager.rows}`)
-            ? localStorage.getItem(`Max_score${GridManager.rows}`)
-            : 4;
         const max_score = this.add
-            .text(CENTER_X, HEIGHT - 72, `${ms}`, {
+            .text(CENTER_X, HEIGHT - 72, `${scoreManager.bestScore}`, {
                 fontSize: "26px",
                 color: "#362f2d",
                 fontFamily: "impact_ttf",
             })
             .setOrigin(0.5, 0.5);
 
-        this.game.events.on("setScore", (current: number, max: number) => {
-            score.setText("SCORE: " + current.toString());
-            max_score.setText("" + max.toString());
+        this.game.events.on("setScore", () => {
+            score.setText("SCORE: " + scoreManager.currentScore.toString());
+            max_score.setText("" + scoreManager.bestScore.toString());
             grid_size_pallet.setText(`${GridManager.rows}x${GridManager.cols}`);
         });
     }

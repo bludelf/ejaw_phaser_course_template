@@ -1,5 +1,4 @@
-import { gridManager, soundManager } from "scripts/util/globals";
-import Example2 from "../Example2";
+import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
 import GridManager from "./Grid";
 import Tile from "./Tile";
 
@@ -10,7 +9,6 @@ export default class TileManager extends Phaser.GameObjects.Group {
 
     constructor(scene: Phaser.Scene) {
         super(scene);
-        Example2.score = 0;
 
         this.initTiles();
         this.scene.add.existing(this);
@@ -39,7 +37,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         newTile.setGridPosition(tileid);
         newTile.activate();
 
-        Example2.score += Math.pow(2, newTile.getFrameIndex() + 1);
+        scoreManager.setScore(newTile.getFrameIndex());
         return true;
     }
 
@@ -85,7 +83,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         if (x < 0) return false;
         if (y < 0) return false;
 
-        const posGrid = gridManager.getIDbyXY(x, y);
+        const posGrid = gridManager.getId(x, y);
         const possibleTiles = this.getMatching("grid_position", posGrid);
 
         if (!possibleTiles.length) return true;
@@ -96,11 +94,6 @@ export default class TileManager extends Phaser.GameObjects.Group {
         }
 
         return false;
-    }
-
-    private destroyTile(x: number, y: number) {
-        const tile = this.get(x, y);
-        tile?.clear();
     }
 
     private initTiles() {

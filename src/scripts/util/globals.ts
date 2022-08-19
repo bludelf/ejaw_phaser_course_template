@@ -1,4 +1,5 @@
 import GridManager from "scripts/game/scenes/Example2/Grid";
+import ScoreManager from "scripts/game/scenes/Example2/Score";
 import Sound from "scripts/game/Sound";
 
 export const FPS = 10;
@@ -17,3 +18,4 @@ export const dataStorage = {
 };
 
 export const gridManager = new GridManager();
+export const scoreManager = new ScoreManager();

@@ -1,13 +1,9 @@
-import { gridManager, soundManager } from "scripts/util/globals";
+import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
 import GridManager from "./Example2/Grid";
 import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
-    static score: number;
-    public max_score: number;
-
     private tilemanager: TileManager;
-    private swipe_sound: Phaser.Sound.BaseSound;
 
     constructor() {
         super({ key: "Example2" });
@@ -22,8 +18,8 @@ export default class Example2 extends Phaser.Scene {
             this.game.events.off("changeGrid");
             this.game.events.off("restartGame");
         });
-        this.checkValueInLocalStorage();
-        this.game.events.emit("setScore", Example2.score, this.max_score);
+        scoreManager.checkBestScore();
+        this.game.events.emit("setScore");
         this.cameras.main.zoom = 1 / (GridManager.rows / 8);
     }
 
@@ -32,9 +28,9 @@ export default class Example2 extends Phaser.Scene {
         this.createTileManager();
         this.tilemanager.createTile();
         this.tilemanager.createTile();
-        this.checkValueInLocalStorage();
+        scoreManager.checkBestScore();
         this.input.keyboard.addListener("keyup", this.keyListener, this);
-        this.game.events.emit("setScore", Example2.score, this.max_score);
+        this.game.events.emit("setScore");
         soundManager.play("game-background.mp3", {
             volume: 0.05,
             loop: true,
@@ -50,7 +46,8 @@ export default class Example2 extends Phaser.Scene {
     }
 
     private restartGame() {
-        gridManager.clearGrid();
+        gridManager.restartGrid();
+        scoreManager.restartGame();
         this.sound.stopAll();
         this.scene.stop();
         this.scene.start("Example2");
@@ -86,8 +83,8 @@ export default class Example2 extends Phaser.Scene {
             this.input.keyboard.enabled = true;
             this.tilemanager.createTile();
             this.tilemanager.createTile();
-            this.checkValueInLocalStorage();
-            this.game.events.emit("setScore", Example2.score, this.max_score);
+            scoreManager.checkBestScore();
+            this.game.events.emit("setScore");
         });
     }
 
@@ -109,28 +106,6 @@ export default class Example2 extends Phaser.Scene {
     }
 
     public changeScore() {
-        return;
-    }
-
-    private checkValueInLocalStorage() {
-        if (!localStorage.getItem(`Max_score${GridManager.rows}`)) {
-            localStorage.setItem(`Max_score${GridManager.rows}`, "4");
-            return;
-        }
-
-        if (Example2.score > this.max_score) {
-            soundManager.play("game-best.aac", {
-                volume: 0.08,
-            });
-            localStorage.setItem(
-                `Max_score${GridManager.rows}`,
-                String(Example2.score)
-            );
-        }
-
-        this.max_score = Number(
-            localStorage.getItem(`Max_score${GridManager.rows}`)
-        );
         return;
     }
 }

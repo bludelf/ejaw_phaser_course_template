@@ -27,6 +27,11 @@ export default class GridManager {
         return this.grid;
     }
 
+    public restartGrid() {
+        this.clearGrid();
+        this.initGrid();
+    }
+
     public initGrid() {
         const coords = new List(GridManager.rows * GridManager.cols, () => ({
             x: 0,
@@ -56,6 +61,7 @@ export default class GridManager {
                 new Phaser.Math.Vector3(data.x, data.y, index)
             );
         });
+        console.log(this.grid);
     }
 
     public getFlatGrid() {
@@ -63,22 +69,22 @@ export default class GridManager {
     }
 
     public clearGrid() {
-        this.grid.length = 0;
+        this.grid = [];
     }
 
-    public getXYbyId(id: number) {
+    public getCoords(id: number) {
         return {
             x: Math.floor(id / GridManager.cols),
             y: id % GridManager.rows,
         };
     }
 
-    public getByID(id: number) {
-        const { x, y } = this.getXYbyId(id);
+    public getCell(id: number) {
+        const { x, y } = this.getCoords(id);
         return this.grid[x][y];
     }
 
-    public getIDbyXY(x: number, y: number) {
+    public getId(x: number, y: number) {
         return this.grid[x][y].z;
     }
 }
