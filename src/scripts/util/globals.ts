@@ -35,3 +35,7 @@ export const frames = [
 
 const token = `${Phaser.Math.Between(0, 1000)}`;
 export const rnd = new Phaser.Math.RandomDataGenerator([token]);
+
+export const maxSwipeDuration = 1000;
+export const minSwipeDistance = 20;
+export const minSwipe = 0.85;

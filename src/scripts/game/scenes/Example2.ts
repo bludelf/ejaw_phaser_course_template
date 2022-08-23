@@ -1,4 +1,11 @@
-import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
+import {
+    gridManager,
+    maxSwipeDuration,
+    minSwipe,
+    minSwipeDistance,
+    scoreManager,
+    soundManager,
+} from "scripts/util/globals";
 import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
@@ -29,6 +36,7 @@ export default class Example2 extends Phaser.Scene {
         this.tilemanager.createTile();
         scoreManager.updateBestScore();
         this.input.keyboard.addListener("keyup", this.keyListener, this);
+        this.input.on("pointerup", this.swipeListner, this);
         this.game.events.emit("setScore");
         soundManager.play("game-background.mp3", {
             volume: 0.05,
@@ -79,6 +87,56 @@ export default class Example2 extends Phaser.Scene {
 
         this.tilemanager.moveTiles(dir.y, dir.x).then(() => {
             this.input.keyboard.enabled = true;
+            this.tilemanager.createTile();
+            this.tilemanager.createTile();
+            scoreManager.updateBestScore();
+            this.game.events.emit("setScore");
+        });
+    }
+
+    public swipeListner(move) {
+        this.input.off("pointerup", this.swipeListner, this);
+
+        const dir = { x: 0, y: 0 };
+
+        var duration = move.upTime - move.downTime;
+        if (duration > maxSwipeDuration) {
+            this.input.on("pointerup", this.swipeListner, this);
+            return;
+        }
+
+        var swipe = new Phaser.Geom.Point(
+            move.upX - move.downX,
+            move.upY - move.downY
+        );
+
+        var distance = Phaser.Geom.Point.GetMagnitude(swipe);
+        if (distance < minSwipeDistance) {
+            this.input.on("pointerup", this.swipeListner, this);
+            return;
+        }
+
+        Phaser.Geom.Point.SetMagnitude(swipe, 1);
+        if (swipe.x > minSwipe) {
+            dir.x = 1;
+            dir.y = 0;
+        }
+        if (swipe.x < -minSwipe) {
+            dir.x = -1;
+            dir.y = 0;
+        }
+        if (swipe.y > minSwipe) {
+            dir.x = 0;
+            dir.y = 1;
+        }
+        if (swipe.y < -minSwipe) {
+            dir.x = 0;
+            dir.y = -1;
+        }
+
+        this.tilemanager.moveTiles(dir.y, dir.x).then(() => {
+            this.input.keyboard.enabled = true;
+            this.input.on("pointerup", this.swipeListner, this);
             this.tilemanager.createTile();
             this.tilemanager.createTile();
             scoreManager.updateBestScore();
