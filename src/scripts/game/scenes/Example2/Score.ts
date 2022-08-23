@@ -1,5 +1,4 @@
-import { soundManager } from "scripts/util/globals";
-import GridManager from "./Grid";
+import { gridManager, soundManager } from "scripts/util/globals";
 
 export default class ScoreManager {
     private maxScore: number;
@@ -7,7 +6,7 @@ export default class ScoreManager {
     private bestsound: number;
 
     constructor() {
-        this.setMaxScore();
+        this.getMaxScore();
         this.score = 0;
         this.bestsound = 0;
     }
@@ -29,21 +28,22 @@ export default class ScoreManager {
         this.score = this.score + Math.pow(2, frameIndex + 1);
     }
 
-    public setMaxScore() {
-        return localStorage.getItem(`Max_score${GridManager.rows}`)
-            ? localStorage.getItem(`Max_score${GridManager.rows}`)
-            : 4;
+    public getMaxScore() {
+        const bestscore = localStorage.getItem(
+            `Max_score${gridManager.rowsCount}`
+        );
+        return bestscore ? bestscore : 4;
     }
 
-    public checkBestScore() {
-        if (!localStorage.getItem(`Max_score${GridManager.rows}`)) {
-            localStorage.setItem(`Max_score${GridManager.rows}`, "4");
+    public updateBestScore() {
+        if (!localStorage.getItem(`Max_score${gridManager.rowsCount}`)) {
+            localStorage.setItem(`Max_score${gridManager.rowsCount}`, "4");
             return;
         }
 
         if (this.score > this.maxScore) {
             localStorage.setItem(
-                `Max_score${GridManager.rows}`,
+                `Max_score${gridManager.rowsCount}`,
                 String(this.currentScore)
             );
             if (this.bestsound === 0) {
@@ -55,7 +55,7 @@ export default class ScoreManager {
         }
 
         this.maxScore = Number(
-            localStorage.getItem(`Max_score${GridManager.rows}`)
+            localStorage.getItem(`Max_score${gridManager.rowsCount}`)
         );
         return;
     }

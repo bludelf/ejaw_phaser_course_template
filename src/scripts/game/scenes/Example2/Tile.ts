@@ -1,9 +1,7 @@
 import { gridManager } from "scripts/util/globals";
-import GridManager from "./Grid";
 
 export default class Tile extends Phaser.GameObjects.Image {
     public grid_position = -1;
-    private grid: GridManager;
 
     static readonly frames = [
         "2.png",
@@ -28,9 +26,9 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     public setGridPosition(position: number) {
         this.grid_position = position;
-        const cell = gridManager.getCell(position);
-        this.x = cell.x;
-        this.y = cell.y;
+        const { x, y } = gridManager.getCell(position);
+        this.x = x;
+        this.y = y;
     }
 
     public updateGridPosition(grid_x: number, grid_y: number) {

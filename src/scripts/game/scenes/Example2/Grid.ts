@@ -10,8 +10,8 @@ import { List } from "scripts/util/extra";
 import { CENTER_X, CENTER_Y } from "scripts/util/globals";
 
 export default class GridManager {
-    static rows = 8;
-    static cols = 8;
+    private rows = 8;
+    private cols = 8;
 
     private grid: Phaser.Math.Vector3[][] = [];
 
@@ -20,7 +20,20 @@ export default class GridManager {
     }
 
     public get size() {
-        return GridManager.rows * GridManager.cols;
+        return this.rows * this.cols;
+    }
+
+    public changeSize(num: number) {
+        this.rows += num;
+        this.cols += num;
+    }
+
+    public get rowsCount() {
+        return this.rows;
+    }
+
+    public get colsCount() {
+        return this.cols;
     }
 
     public getGrid() {
@@ -33,7 +46,7 @@ export default class GridManager {
     }
 
     public initGrid() {
-        const coords = new List(GridManager.rows * GridManager.cols, () => ({
+        const coords = new List(this.rows * this.cols, () => ({
             x: 0,
             y: 0,
             width: 100,
@@ -45,15 +58,15 @@ export default class GridManager {
         Phaser.Actions.GridAlign(coords as any, {
             cellWidth: 100,
             cellHeight: 100,
-            x: CENTER_X - (GridManager.rows * 100) / 2,
-            y: CENTER_Y - (GridManager.cols * 100) / 2,
-            width: GridManager.rows,
-            height: GridManager.cols,
+            x: CENTER_X - (this.rows * 100) / 2,
+            y: CENTER_Y - (this.cols * 100) / 2,
+            width: this.rows,
+            height: this.cols,
             position: Phaser.Display.Align.LEFT_TOP,
         });
 
         coords.forEach((data, index) => {
-            const grid_y = Math.floor(index / GridManager.rows);
+            const grid_y = Math.floor(index / this.rows);
             if (this.grid[grid_y] === undefined) {
                 this.grid[grid_y] = [];
             }
@@ -74,8 +87,8 @@ export default class GridManager {
 
     public getCoords(id: number) {
         return {
-            x: Math.floor(id / GridManager.cols),
-            y: id % GridManager.rows,
+            x: Math.floor(id / this.cols),
+            y: id % this.rows,
         };
     }
 

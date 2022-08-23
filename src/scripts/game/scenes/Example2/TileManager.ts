@@ -1,5 +1,4 @@
 import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
-import GridManager from "./Grid";
 import Tile from "./Tile";
 
 export default class TileManager extends Phaser.GameObjects.Group {
@@ -78,8 +77,8 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     private canMove(x: number, y: number, frame: number): boolean | Tile {
-        if (x >= GridManager.rows) return false;
-        if (y >= GridManager.cols) return false;
+        if (x >= gridManager.rowsCount) return false;
+        if (y >= gridManager.colsCount) return false;
         if (x < 0) return false;
         if (y < 0) return false;
 
@@ -106,7 +105,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
         const childs = this.getMatching("active", true);
 
         const dir = dir_x ? dir_x : dir_y;
-        const size = dir_x ? GridManager.rows : GridManager.cols;
+        const size = dir_x ? gridManager.rowsCount : gridManager.colsCount;
 
         return childs.sort((obj1, obj2) => {
             const grid_pos_1 = obj1.grid_position % size;

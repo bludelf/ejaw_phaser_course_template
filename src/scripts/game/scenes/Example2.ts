@@ -1,5 +1,4 @@
 import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
-import GridManager from "./Example2/Grid";
 import TileManager from "./Example2/TileManager";
 
 export default class Example2 extends Phaser.Scene {
@@ -18,9 +17,9 @@ export default class Example2 extends Phaser.Scene {
             this.game.events.off("changeGrid");
             this.game.events.off("restartGame");
         });
-        scoreManager.checkBestScore();
+        scoreManager.updateBestScore();
         this.game.events.emit("setScore");
-        this.cameras.main.zoom = 1 / (GridManager.rows / 8);
+        this.cameras.main.zoom = 1 / (gridManager.rowsCount / 8);
     }
 
     public create() {
@@ -28,7 +27,7 @@ export default class Example2 extends Phaser.Scene {
         this.createTileManager();
         this.tilemanager.createTile();
         this.tilemanager.createTile();
-        scoreManager.checkBestScore();
+        scoreManager.updateBestScore();
         this.input.keyboard.addListener("keyup", this.keyListener, this);
         this.game.events.emit("setScore");
         soundManager.play("game-background.mp3", {
@@ -38,10 +37,9 @@ export default class Example2 extends Phaser.Scene {
     }
 
     private changeGrid(num: number) {
-        if (GridManager.rows + num > 8) return;
-        if (GridManager.cols + num < 4) return;
-        GridManager.rows += num;
-        GridManager.cols += num;
+        if (gridManager.rowsCount + num > 8) return;
+        if (gridManager.colsCount + num < 4) return;
+        gridManager.changeSize(num);
         this.restartGame();
     }
 
@@ -83,7 +81,7 @@ export default class Example2 extends Phaser.Scene {
             this.input.keyboard.enabled = true;
             this.tilemanager.createTile();
             this.tilemanager.createTile();
-            scoreManager.checkBestScore();
+            scoreManager.updateBestScore();
             this.game.events.emit("setScore");
         });
     }

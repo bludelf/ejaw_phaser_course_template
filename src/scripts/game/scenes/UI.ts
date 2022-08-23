@@ -1,11 +1,11 @@
 import {
     CENTER_X,
     CENTER_Y,
+    gridManager,
     HEIGHT,
     scoreManager,
     WIDTH,
 } from "scripts/util/globals";
-import GridManager from "./Example2/Grid";
 
 export default class UI extends Phaser.Scene {
     constructor() {
@@ -49,11 +49,16 @@ export default class UI extends Phaser.Scene {
 
         this.add.sprite(720, 97, "ui", "size_number.png");
         const grid_size_pallet = this.add
-            .text(720, 97, `${GridManager.rows}x${GridManager.cols}`, {
-                fontSize: "36px",
-                color: "#362f2d",
-                fontFamily: "impact_ttf",
-            })
+            .text(
+                720,
+                97,
+                `${gridManager.rowsCount}x${gridManager.colsCount}`,
+                {
+                    fontSize: "36px",
+                    color: "#362f2d",
+                    fontFamily: "impact_ttf",
+                }
+            )
             .setOrigin(0.5, 0.5);
 
         gridBigger.setInteractive();
@@ -98,7 +103,9 @@ export default class UI extends Phaser.Scene {
         this.game.events.on("setScore", () => {
             score.setText("SCORE: " + scoreManager.currentScore.toString());
             max_score.setText("" + scoreManager.bestScore.toString());
-            grid_size_pallet.setText(`${GridManager.rows}x${GridManager.cols}`);
+            grid_size_pallet.setText(
+                `${gridManager.rowsCount}x${gridManager.colsCount}`
+            );
         });
     }
 }
