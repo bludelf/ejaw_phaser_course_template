@@ -1,11 +1,12 @@
-import { gridManager, scoreManager, soundManager } from "scripts/util/globals";
+import {
+    gridManager,
+    rnd,
+    scoreManager,
+    soundManager,
+} from "scripts/util/globals";
 import Tile from "./Tile";
 
 export default class TileManager extends Phaser.GameObjects.Group {
-    private rnd = new Phaser.Math.RandomDataGenerator([
-        `${Phaser.Math.Between(0, 1000)}`,
-    ]);
-
     constructor(scene: Phaser.Scene) {
         super(scene);
 
@@ -31,7 +32,7 @@ export default class TileManager extends Phaser.GameObjects.Group {
             return false;
         }
 
-        const tileid = this.rnd.pick(positionsFreePhaser.getArray());
+        const tileid = rnd.pick(positionsFreePhaser.getArray());
         const newTile = this.getFirstDead() as Tile;
         newTile.setGridPosition(tileid);
         newTile.activate();
@@ -41,33 +42,29 @@ export default class TileManager extends Phaser.GameObjects.Group {
     }
 
     public async moveTiles(dir_x: number, dir_y: number) {
-        const isMoving = <Promise<unknown>[]>[Promise.resolve()];
+        let isMoving = <Promise<unknown>[]>[Promise.resolve()];
         while (isMoving.length) {
-            isMoving.length = 0;
             const childs = this.sortChilds(dir_x, dir_y);
 
-            childs.forEach((tile: Tile) => {
+            isMoving = childs.reduce((arr, tile: Tile) => {
                 const { x, y } = tile.getGridPosition();
-                const [futureX, futureY] = [x + dir_x, y + dir_y];
+                const [vx, vy] = [x + dir_x, y + dir_y];
 
-                const canMove = this.canMove(
-                    futureX,
-                    futureY,
-                    tile.getFrameIndex()
-                );
-                if (!canMove) return;
+                if (!this.canMove(vx, vy)) return arr;
 
-                tile.updateGridPosition(futureX, futureY);
+                const busy = this.isBusyTile(vx, vy);
 
-                isMoving.push(
-                    tile.updatePosition(1).then(() => {
-                        if (typeof canMove === "boolean") return;
+                if (busy && !this.couldUpgrade(tile, busy)) return arr;
 
-                        canMove.clear();
-                        tile.upgrade();
-                    })
-                );
-            });
+                tile.updateGridPosition(vx, vy);
+
+                const move = tile.updatePosition(1);
+
+                move.then(() => this.tryUpgrade(tile, busy));
+
+                arr.push(move);
+                return arr;
+            }, []);
 
             await Promise.all(isMoving);
             soundManager.play("game-slide.wav");
@@ -76,23 +73,30 @@ export default class TileManager extends Phaser.GameObjects.Group {
         return Promise.resolve();
     }
 
-    private canMove(x: number, y: number, frame: number): boolean | Tile {
-        if (x >= gridManager.rowsCount) return false;
-        if (y >= gridManager.colsCount) return false;
-        if (x < 0) return false;
-        if (y < 0) return false;
+    private tryUpgrade(tile, busy) {
+        if (!busy) return;
 
+        busy.clear();
+        tile.upgrade();
+    }
+
+    private canMove(x: number, y: number): boolean {
+        return gridManager.checkGridSize(x, y);
+    }
+
+    private isBusyTile(x: number, y: number) {
         const posGrid = gridManager.getId(x, y);
         const possibleTiles = this.getMatching("grid_position", posGrid);
 
-        if (!possibleTiles.length) return true;
+        return possibleTiles[0];
+    }
 
-        const tile = possibleTiles[0];
-        if (frame === tile.getFrameIndex()) {
-            return tile;
-        }
+    private couldUpgrade(tile: Tile, ftile?: Tile | undefined): boolean {
+        const tileFrame = tile.getFrameIndex();
+        const ftileFrame = ftile?.getFrameIndex();
+        if (tileFrame !== ftileFrame) return false;
 
-        return false;
+        return true;
     }
 
     private initTiles() {

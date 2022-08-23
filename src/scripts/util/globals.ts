@@ -19,3 +19,19 @@ export const dataStorage = {
 
 export const gridManager = new GridManager();
 export const scoreManager = new ScoreManager();
+
+export const frames = [
+    "2.png",
+    "4.png",
+    "8.png",
+    "16.png",
+    "32.png",
+    "64.png",
+    "128.png",
+    "256.png",
+    "512.png",
+    "1024.png",
+];
+
+const token = `${Phaser.Math.Between(0, 1000)}`;
+export const rnd = new Phaser.Math.RandomDataGenerator([token]);

@@ -1,20 +1,7 @@
-import { gridManager } from "scripts/util/globals";
+import { frames, gridManager } from "scripts/util/globals";
 
 export default class Tile extends Phaser.GameObjects.Image {
     public grid_position = -1;
-
-    static readonly frames = [
-        "2.png",
-        "4.png",
-        "8.png",
-        "16.png",
-        "32.png",
-        "64.png",
-        "128.png",
-        "256.png",
-        "512.png",
-        "1024.png",
-    ];
 
     constructor(scene: Phaser.Scene) {
         super(scene, 0, 0, "tiles", 0);
@@ -61,7 +48,7 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     public getFrameIndex() {
-        return Tile.frames.indexOf(String(this.frame.name));
+        return frames.indexOf(String(this.frame.name));
     }
 
     public upgrade() {
@@ -82,9 +69,8 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     private setFrameIndex(index: number) {
-        if (index >= Tile.frames.length) return false;
-        //this.setFrame(Tile.frames[index]);
-        this.setTexture("ui", Tile.frames[index]);
+        if (index >= frames.length) return false;
+        this.setTexture("ui", frames[index]);
         return true;
     }
 }

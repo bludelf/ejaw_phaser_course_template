@@ -100,4 +100,13 @@ export default class GridManager {
     public getId(x: number, y: number) {
         return this.grid[x][y].z;
     }
+
+    public checkGridSize(x, y) {
+        if (x >= this.rows) return false;
+        if (y >= this.cols) return false;
+        if (x < 0) return false;
+        if (y < 0) return false;
+
+        return true;
+    }
 }
