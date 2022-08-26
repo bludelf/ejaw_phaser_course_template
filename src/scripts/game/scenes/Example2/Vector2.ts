@@ -20,10 +20,6 @@ export default class Vector2 extends Phaser.Math.Vector2 {
         return this;
     }
 
-    magnitude() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-
     roundCoords() {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);

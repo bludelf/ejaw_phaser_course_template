@@ -105,7 +105,7 @@ export default class Example2 extends Phaser.Scene {
 
         let point = new Vector2(move.upX - move.downX, move.upY - move.downY);
 
-        const distance = point.magnitude();
+        const distance = point.length();
         if (distance < minSwipeDistance) {
             this.input.on("pointerup", this.swipeListner, this);
             return;

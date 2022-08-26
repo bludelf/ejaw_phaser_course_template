@@ -21,7 +21,7 @@ export default class UI extends Phaser.Scene {
     create() {
         this.add
             .sprite(CENTER_X, CENTER_Y - 30, "ui", "Background.png")
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5);
 
         this.add.sprite(CENTER_X, 100, "ui", "Panel_header.png");
 
@@ -33,19 +33,43 @@ export default class UI extends Phaser.Scene {
                 color: "#5f534f",
                 fontFamily: "impact_ttf",
             })
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5);
 
         restart.setInteractive();
         restart.on(
             "pointerdown",
             () => {
+                restart.setTexture("ui", "Restart_Button_pressed.png");
+            },
+            this
+        );
+
+        restart.on(
+            "pointerup",
+            () => {
+                restart.setTexture("ui", "Restart_Button.png");
                 this.game.events.emit("restartGame");
             },
             this
         );
 
-        const gridLower = this.add.sprite(800, 97, "ui", "Bigger_button.png");
-        const gridBigger = this.add.sprite(640, 97, "ui", "Smaller_button.png");
+        restart.on(
+            "pointerover",
+            () => {
+                restart.setTexture("ui", "Restart_Button_hover.png");
+            },
+            this
+        );
+        restart.on(
+            "pointerout",
+            () => {
+                restart.setTexture("ui", "Restart_Button.png");
+            },
+            this
+        );
+
+        const gridLower = this.add.sprite(640, 97, "ui", "Smaller_button.png");
+        const gridBigger = this.add.sprite(800, 97, "ui", "Bigger_button.png");
 
         this.add.sprite(720, 97, "ui", "size_number.png");
         const grid_size_pallet = this.add
@@ -59,22 +83,71 @@ export default class UI extends Phaser.Scene {
                     fontFamily: "impact_ttf",
                 }
             )
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5);
 
         gridBigger.setInteractive();
         gridLower.setInteractive();
 
         gridBigger.on(
+            "pointerover",
+            () => {
+                gridBigger.setTexture("ui", "Bigger_button_hover.png");
+            },
+            this
+        );
+        gridBigger.on(
+            "pointerout",
+            () => {
+                gridBigger.setTexture("ui", "Bigger_button.png");
+            },
+            this
+        );
+
+        gridBigger.on(
             "pointerdown",
             () => {
-                this.game.events.emit("changeGrid", 2);
+                gridBigger.setTexture("ui", "Bigger_button_pressed.png");
+            },
+            this
+        );
+
+        gridBigger.on(
+            "pointerup",
+            () => {
+                gridBigger.setTexture("ui", "Bigger_button.png");
+                this.game.events.emit("changeGrid", -2);
+            },
+            this
+        );
+
+        gridLower.on(
+            "pointerover",
+            () => {
+                gridLower.setTexture("ui", "Smaller_button_hover.png");
             },
             this
         );
         gridLower.on(
+            "pointerout",
+            () => {
+                gridLower.setTexture("ui", "Smaller_button.png");
+            },
+            this
+        );
+
+        gridLower.on(
             "pointerdown",
             () => {
-                this.game.events.emit("changeGrid", -2);
+                gridLower.setTexture("ui", "Smaller_button_pressed.png");
+            },
+            this
+        );
+
+        gridLower.on(
+            "pointerup",
+            () => {
+                gridLower.setTexture("ui", "Smaller_button.png");
+                this.game.events.emit("changeGrid", 2);
             },
             this
         );
@@ -98,7 +171,7 @@ export default class UI extends Phaser.Scene {
                 color: "#362f2d",
                 fontFamily: "impact_ttf",
             })
-            .setOrigin(0.5, 0.5);
+            .setOrigin(0.5);
 
         this.game.events.on("setScore", () => {
             score.setText("SCORE: " + scoreManager.currentScore.toString());
